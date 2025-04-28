@@ -281,7 +281,7 @@ async function checkPriorityName() {
 
 
     document.getElementById("site").style.display = "flex";
-    await getPriorityName();
+    await getPriorityName("mining");
 
   } catch (err) {
     console.error("Error getting priority name:", err);
@@ -374,9 +374,8 @@ async function setPriorityName(name, setActiveBtn) {
 
     if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
-            await loadSectionWithLoader("profile");
+      await getPriorityName('profile');
       await profileInfo();
-      await getPriorityName();
     } else {
       setActiveBtn.textContent = 'Failed. Try again.';
       setActiveBtn.disabled = false;
@@ -391,9 +390,9 @@ async function setPriorityName(name, setActiveBtn) {
   }
 }
 
-async function getPriorityName() {
+async function getPriorityName(inff) {
     await miningfunctions();
-    await loadSectionWithLoader("mining");
+    await loadSectionWithLoader(inff);
   const nameProfile = document.getElementById('name');
   try {
     const name = await readContract({
