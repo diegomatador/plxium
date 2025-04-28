@@ -372,11 +372,10 @@ async function setPriorityName(name, setActiveBtn) {
       timeout: 30000,
     });
 
-    if (receipt.status === 1) {
+    if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
       setTimeout(() => location.reload(), 500);
     } else {
-
       setActiveBtn.textContent = 'Failed. Try again.';
       setActiveBtn.disabled = false;
       console.log("Transaction failed", "error");
