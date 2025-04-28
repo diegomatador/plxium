@@ -526,7 +526,7 @@ async function upgradeLevel() {
   try {
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
-    if (nextLevelCost < BigInt(price)) {
+    if ( balance < BigInt(nextLevelCost) {
       powerup.textContent = "Not enough balance for upgrade!";
       return;
     }
