@@ -526,10 +526,10 @@ async function upgradeLevel() {
   try {
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
-    if (balance < BigInt(nextLevelCost)) {
-          powerup.textContent = "Not enough balance for upgrade!";
-          return;
-        }
+        if (balance < nextLevelCost) {
+      powerup.textContent = "Not enough balance for upgrade!";
+      return;
+    }
     powerup.disabled = true;
     powerup.textContent = "Waiting for confirmation...";
     const txHash = await writeContract({
