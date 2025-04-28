@@ -21,10 +21,10 @@ const baseSepolia = {
         },
         rpcUrls: {
           default: {
-            http: ['https://sepolia.base.org'],
+            http: ['https://base-sepolia.drpc.org'],
           },
           public: {
-            http: ['https://sepolia.base.org'],
+            http: ['https://base-sepolia.drpc.org'],
           },
         },
         blockExplorers: {
@@ -358,7 +358,7 @@ async function setPriorityName(name, setActiveBtn) {
     setActiveBtn.textContent = 'Waiting...';
     setActiveBtn.disabled = true;
 
-    const txHash = await writeContract({
+    const tx = await writeContract({
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'setPriorityName',
@@ -367,7 +367,7 @@ async function setPriorityName(name, setActiveBtn) {
 
     const receipt = await waitForTransaction({
       chainId: 84532,
-      hash: txHash.toString(),
+      hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
     });
@@ -494,7 +494,7 @@ mintBtnEl.addEventListener("click", async () => {
     }
     mintBtnEl.textContent = `Waiting for confirmation...`;
     mintBtnEl.disabled = true;
-    const txHash = await writeContract({
+    const tx = await writeContract({
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'mint',
@@ -504,7 +504,7 @@ mintBtnEl.addEventListener("click", async () => {
 
     const receipt = await waitForTransaction({
       chainId: 84532,
-      hash: txHash.toString(),
+      hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
     });
@@ -526,13 +526,14 @@ async function upgradeLevel() {
   try {
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
-        if (balance < nextLevelCost) {
+    if (nextLevelCost > balance) {
       powerup.textContent = "Not enough balance for upgrade!";
       return;
     }
     powerup.disabled = true;
     powerup.textContent = "Waiting for confirmation...";
-    const txHash = await writeContract({
+
+    const tx = await writeContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'upgradeLevel',
@@ -542,26 +543,23 @@ async function upgradeLevel() {
 
     const receipt = await waitForTransaction({
       chainId: 84532,
-      hash: txHash.toString(),
+      hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
     });
 
     if (receipt.status === 'success') {
       powerup.textContent = "Level Upgraded!";
-      setStatus("Level upgraded! Reloading...", "success");
+      powerup.disabled = false;
       await miningfunctions();
-
     } else {
       powerup.textContent = "Try Again";
       powerup.disabled = false;
-      setStatus("Transaction failed: " + err.message, "error");
     }
   } catch (err) {
     console.error("Transaction failed:", err);
     powerup.textContent = "Try Again";
     powerup.disabled = false;
-    setStatus("Transaction failed: " + err.message, "error");
   }
 }
 
@@ -578,7 +576,7 @@ async function dailyStrike() {
 
     collectr.disabled = true;
     collectr.textContent = "Waiting for confirmation...";
-    const txHash = await writeContract({
+    const tx = await writeContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'dailyStrike',
@@ -588,7 +586,7 @@ async function dailyStrike() {
 
     const receipt = await waitForTransaction({
       chainId: 84532,
-      hash: txHash.toString(),
+      hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
     });
@@ -841,7 +839,8 @@ mintBtnpr.addEventListener("click", async () => {
     }
     mintBtnpr.textContent = `Waiting for confirmation...`;
     mintBtnpr.disabled = false;
-    const txHash = await writeContract({
+
+    const tx = await writeContract({
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'mint',
@@ -851,7 +850,7 @@ mintBtnpr.addEventListener("click", async () => {
 
     const receipt = await waitForTransaction({
       chainId: 84532,
-      hash: txHash.toString(),
+      hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
     });
@@ -866,7 +865,6 @@ mintBtnpr.addEventListener("click", async () => {
         mintBtnpr.disabled = false;
         }
   } catch (err) {
-    setStatuss("Transaction failed: " + err.message, "error");
     mintBtnpr.textContent = `Try again`;
     mintBtnpr.disabled = false;
   }
