@@ -281,8 +281,7 @@ async function checkPriorityName() {
 
 
     document.getElementById("site").style.display = "flex";
-    await getPriorityName('mining');
-    await miningfunctions();
+    await getPriorityName('mining', miningfunctions);
 
   } catch (err) {
     console.error("Error getting priority name:", err);
@@ -375,8 +374,7 @@ async function setPriorityName(name, setActiveBtn) {
 
     if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
-      await getPriorityName('profile');
-      await profileInfo();
+      await getPriorityName('profile', profileInfo);
     } else {
       setActiveBtn.textContent = 'Failed. Try again.';
       setActiveBtn.disabled = false;
@@ -391,8 +389,9 @@ async function setPriorityName(name, setActiveBtn) {
   }
 }
 
-async function getPriorityName(bnn) {
+async function getPriorityName(bnn, funcc) {
   await loadSectionWithLoader(bnn);
+  await funcc();
   const nameProfile = document.getElementById('name');
 
   try {
@@ -513,8 +512,7 @@ mintBtnEl.addEventListener("click", async () => {
     if (receipt.status === 'success') {
         mintBtnEl.textContent = `Mint successful!`;
         mintBtnEl.disabled = true;
-        await getPriorityName('profile');
-        await profileInfo();
+        await getPriorityName('profile', profileInfo);
         }
   } catch (err) {
     console.error("Transaction failed:", err);
@@ -551,7 +549,7 @@ async function upgradeLevel() {
     });
 
     if (receipt.status === 'success') {
-      powerup.textContent = "Level Upgraded!";
+      powerup.textContent = "Upgraded!";
       powerup.disabled = false;
       await miningfunctions();
     } else {
@@ -863,8 +861,7 @@ mintBtnpr.addEventListener("click", async () => {
     if (receipt.status === 'success') {
         mintBtnpr.textContent = `Minted`;
         document.getElementById("mintOverlay").style.display = "none";
-        await getPriorityName('profile');
-        await profileInfo();
+        await getPriorityName('profile', profileInfo);
         }
         else {
         mintBtnpr.textContent = `Try again`;
