@@ -281,8 +281,9 @@ async function checkPriorityName() {
 
 
     document.getElementById("site").style.display = "flex";
-    await getPriorityName();
+    await getPriorityName('mining');
     await miningfunctions();
+
   } catch (err) {
     console.error("Error getting priority name:", err);
   }
@@ -374,10 +375,8 @@ async function setPriorityName(name, setActiveBtn) {
 
     if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
-      await loadSectionWithLoader('profile');
+      await getPriorityName('profile');
       await profileInfo();
-      await getPriorityName();
-
     } else {
       setActiveBtn.textContent = 'Failed. Try again.';
       setActiveBtn.disabled = false;
@@ -392,7 +391,8 @@ async function setPriorityName(name, setActiveBtn) {
   }
 }
 
-async function getPriorityName() {
+async function getPriorityName(bnn) {
+  await loadSectionWithLoader(bnn);
   const nameProfile = document.getElementById('name');
 
   try {
@@ -513,7 +513,8 @@ mintBtnEl.addEventListener("click", async () => {
     if (receipt.status === 'success') {
         mintBtnEl.textContent = `Mint successful!`;
         mintBtnEl.disabled = true;
-        setTimeout(() => location.reload(), 500);
+        await getPriorityName('profile');
+        await profileInfo();
         }
   } catch (err) {
     console.error("Transaction failed:", err);
@@ -613,8 +614,6 @@ document.getElementById("powerup").addEventListener("click", upgradeLevel);
 document.getElementById("collectr").addEventListener("click", dailyStrike);
 
 async function miningfunctions() {
-  await loadSectionWithLoader('mining');
-
   const collectr = document.getElementById('collectr');
   const powerup = document.getElementById('powerup');
   const levels = document.getElementById('level');
@@ -863,7 +862,8 @@ mintBtnpr.addEventListener("click", async () => {
 
     if (receipt.status === 'success') {
         mintBtnpr.textContent = `Minted`;
-        await loadSectionWithLoader('profile');
+        document.getElementById("mintOverlay").style.display = "none";
+        await getPriorityName('profile');
         await profileInfo();
         }
         else {
