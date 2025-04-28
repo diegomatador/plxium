@@ -282,7 +282,7 @@ async function checkPriorityName() {
 
     document.getElementById("site").style.display = "flex";
     await getPriorityName();
-
+    await miningfunctions();
   } catch (err) {
     console.error("Error getting priority name:", err);
   }
@@ -393,7 +393,6 @@ async function setPriorityName(name, setActiveBtn) {
 }
 
 async function getPriorityName() {
-  await miningfunctions();
   const nameProfile = document.getElementById('name');
 
   try {
