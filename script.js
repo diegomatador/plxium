@@ -281,7 +281,7 @@ async function checkPriorityName() {
 
 
     document.getElementById("site").style.display = "flex";
-    await getPriorityName("mining");
+    await getPriorityName();
 
   } catch (err) {
     console.error("Error getting priority name:", err);
@@ -289,6 +289,8 @@ async function checkPriorityName() {
 }
 
 async function profileInfo() {
+  await loadSectionWithLoader('profile');
+
   const nameProfile = document.getElementById('username');
   const adrs = document.getElementById('useraddress');
   const shortadrs = shortenAddress(userAccount);
@@ -374,7 +376,6 @@ async function setPriorityName(name, setActiveBtn) {
 
     if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
-      await getPriorityName('profile');
       await profileInfo();
     } else {
       setActiveBtn.textContent = 'Failed. Try again.';
@@ -390,10 +391,10 @@ async function setPriorityName(name, setActiveBtn) {
   }
 }
 
-async function getPriorityName(inff) {
-    await miningfunctions();
-    await loadSectionWithLoader(inff);
+async function getPriorityName() {
+  await miningfunctions();
   const nameProfile = document.getElementById('name');
+
   try {
     const name = await readContract({
       address: contractAddress1,
@@ -612,7 +613,9 @@ document.getElementById("powerup").addEventListener("click", upgradeLevel);
 document.getElementById("collectr").addEventListener("click", dailyStrike);
 
 async function miningfunctions() {
-    const collectr = document.getElementById('collectr');
+  await loadSectionWithLoader('mining');
+
+  const collectr = document.getElementById('collectr');
   const powerup = document.getElementById('powerup');
   const levels = document.getElementById('level');
   const balances = document.getElementById('balance');
@@ -816,6 +819,7 @@ async function checkNamePr() {
 }
 
 mintBtnpr.addEventListener("click", async () => {
+
   const name = nameInputpr.value.trim();
   const refcode = "default";
 
@@ -831,8 +835,10 @@ mintBtnpr.addEventListener("click", async () => {
       functionName: 'getMintPrice',
       args: [name]
     });
+
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
+
     if (balance < BigInt(price)) {
       mintBtnpr.textContent = `Not enough balance for mint.`;
       return;
@@ -857,8 +863,7 @@ mintBtnpr.addEventListener("click", async () => {
 
     if (receipt.status === 'success') {
         mintBtnpr.textContent = `Minted`;
-        mintBtnpr.disabled = false;
-        setTimeout(() => location.reload(), 1000);
+        await profileInfo();
         }
         else {
         mintBtnpr.textContent = `Try again`;
