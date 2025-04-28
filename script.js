@@ -374,6 +374,7 @@ async function setPriorityName(name, setActiveBtn) {
 
     if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
+            await loadSectionWithLoader("profile");
       await profileInfo();
       await getPriorityName();
     } else {
