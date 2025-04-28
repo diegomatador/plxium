@@ -374,7 +374,8 @@ async function setPriorityName(name, setActiveBtn) {
 
     if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
-      setTimeout(() => location.reload(), 500);
+      await profileInfo();
+      await getPriorityName();
     } else {
       setActiveBtn.textContent = 'Failed. Try again.';
       setActiveBtn.disabled = false;
