@@ -289,8 +289,6 @@ async function checkPriorityName() {
 }
 
 async function profileInfo() {
-  await loadSectionWithLoader('profile');
-
   const nameProfile = document.getElementById('username');
   const adrs = document.getElementById('useraddress');
   const shortadrs = shortenAddress(userAccount);
@@ -376,7 +374,10 @@ async function setPriorityName(name, setActiveBtn) {
 
     if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
+      await loadSectionWithLoader('profile');
       await profileInfo();
+      await getPriorityName();
+
     } else {
       setActiveBtn.textContent = 'Failed. Try again.';
       setActiveBtn.disabled = false;
@@ -863,6 +864,7 @@ mintBtnpr.addEventListener("click", async () => {
 
     if (receipt.status === 'success') {
         mintBtnpr.textContent = `Minted`;
+        await loadSectionWithLoader('profile');
         await profileInfo();
         }
         else {
