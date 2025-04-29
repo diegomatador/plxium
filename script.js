@@ -654,6 +654,8 @@ async function miningfunctions() {
       updateLevelProgress(percentToNextLevel);
     }
     if (striked) {
+      document.getElementById("neonsquare").style.display = "none";
+      document.getElementById("blinkingcircle").style.display = "none";
       collectr.style.display = "flex";
       document.getElementById('miningImg').classList.add('disabled');
     } else {
