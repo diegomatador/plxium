@@ -511,8 +511,7 @@ mintBtnEl.addEventListener("click", async () => {
 
     if (receipt.status === 'success') {
         mintBtnEl.textContent = `Mint successful!`;
-        mintBtnEl.disabled = true;
-        await getPriorityName('profile', profileInfo);
+        setTimeout(() => {location.reload();}, 500);
         }
   } catch (err) {
     console.error("Transaction failed:", err);
