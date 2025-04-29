@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const loader = document.getElementById("loader");
   loader.style.display = "flex";
   try {
-    setupSectionButtons();
     await checkWalletConnection();
+    setupSectionButtons();
   } catch (err) {
     console.error("Error load site:", err);
   } finally {
@@ -279,7 +279,7 @@ async function checkPriorityName() {
       return;
     }
 
-
+    document.body.classList.add('site-active');
     document.getElementById("site").style.display = "flex";
     await getPriorityName('mining', miningfunctions);
 
