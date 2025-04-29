@@ -6,14 +6,17 @@
   <title>PlXium</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rubik&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="static/css/styles.css">
   <style>
-    body { margin: 0; background: url('images/backimg.webp') center center no-repeat;
-      background-size: cover; display: flex; flex-direction: column; min-height: 100vh; user-select: none;
+    body { margin: 0; background: url('static/images/backend.webp');
+      background-size: 100% 100%;
+      display: flex; flex-direction: column; min-height: 100vh; user-select: none;
        -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -webkit-touch-callout: none; }
     img { user-drag: none; -webkit-user-drag: none; }
-
+    body.site-active { background-position: right center; background-repeat: no-repeat; background-size: 75% 100%; }
+    @media (max-width: 768px) { body.site-active { background-size: 100% 100%; } }
   </style>
+
 </head>
 <body>
     <div id="loader" class="loader"></div>
@@ -41,7 +44,7 @@
     <div class="site" id="site" style="display: none;">
         <div class="side-menu" id="sideMenu">
           <div class="logo">
-            <img src="images/logos.webp" alt="PlXium">
+            <img src="static/images/logo.webp" alt="PlXium">
             <h2>PLXium</h2>
           </div>
           <button class="active" id="miningbtn">Mining</button>
@@ -51,16 +54,16 @@
           <button aria-label="About" id="aboutbtn">About</button>
 
           <div class="footer-icons">
-            <img src="images/x.webp" alt="X" onclick="window.open('https://your-x-account-url.com', '_blank');">
-            <img src="images/telegram.webp" alt="Telegram" onclick="window.open('https://t.me/plxium', '_blank');">
-            <img src="images/warpcast.webp" alt="Warpcast" onclick="window.open('https://warpcast.com/ploxoy', '_blank');">
+            <img src="static/images/x.webp" alt="X" onclick="window.open('https://your-x-account-url.com', '_blank');">
+            <img src="static/images/telegram.webp" alt="Telegram" onclick="window.open('https://t.me/plxium', '_blank');">
+            <img src="static/images/warpcast.webp" alt="Warpcast" onclick="window.open('https://warpcast.com/ploxoy', '_blank');">
         </div>
         </div>
         <div class="menu-handle" id="menuHandle" onclick="toggleMenu()"><span>&#8801</span></div>
         <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
         <div class="profile">
-            <img src="images/profile.webp" id="profileImg">
+            <img src="static/images/profile.webp" id="profileImg">
             <span class="name" id="name"></span>
         </div>
 
@@ -87,7 +90,9 @@
          </div>
           <div class="mining-center">
           <div class="image-wrapper" id="image-wrapper">
-            <img src="images/mininglogo.webp" id="miningImg">
+            <img src="static/images/mininglogo.webp" id="miningImg">
+            <div class="neon-square"></div>
+            <div class="blinking-circle"></div>
             <button id="collectr" class="collect-button" style="display: none;">Collect Reward</button>
           </div>
           <button class="powerup" id="powerup">...</button>
@@ -96,7 +101,7 @@
 
     <div id="profile" style="display: none;">
         <div class="topprofile">
-          <img src="images/profile.webp" id="profilelogo" />
+          <img src="static/images/profile.webp" id="profilelogo" />
           <div class="info">
             <span id="username">...</span>
             <p>
@@ -165,7 +170,7 @@
       </p>
     </div>
     </div>
-<script type="module" src="script.js"></script>
+<script type="module" src="static/js/script.js"></script>
 <script>
   const sideMenu = document.getElementById('sideMenu');
   const overlay = document.getElementById('overlay');
