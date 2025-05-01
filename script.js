@@ -49,7 +49,7 @@ async function getPlatform() {
     if (context && context.client) {
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: miniAppConnector(),
+        connectors: [miniAppConnector()],
         chains: [base],
         publicClient: w3mProvider({ projectId }),
         webSocketPublicClient: null,
