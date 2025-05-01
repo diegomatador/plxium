@@ -8,31 +8,33 @@ import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains 
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 
 const { base } = WagmiCoreChains;
-const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
+const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
+
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
+import { farcasterFrame as miniAppConnector } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
+const projectId = "4b8953ae3a579f498e15afac1101b481";
+
 
 async function detectEnvironment() {
-  const isUserAgentWarpcast = navigator.userAgent.includes("Warpcast");
-  let inWarpcastSDK = false;
-
-  
-
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
-    inWarpcastSDK = true;
-      await sdk.actions.addFrame()
-  const context = await sdk.context;
-  console.log(context)
-  } catch (e) {
-    inWarpcastSDK = false;
-  }
+    const context = await sdk.context;
+    if (context && context.client) {
 
-  if (isUserAgentWarpcast || inWarpcastSDK) {
-    console.log("✅ Открыто в Warpcast Mini App");
-  } else {
-    console.log("🌐 Открыто в обычном браузере");
+      showWarpcastWalletButton();
+      initializeWagmiConfigWithMiniAppConnector();
+      if (!context.client.added) {
+        await sdk.actions.addFrame()
+      }
+      console.log("✅ Открыто в Warpcast Mini App");
+    } else {
+      console.log("🌐 Открыто в обычном браузере");
+    }
+  } catch (error) {
+    console.error("Ошибка при получении контекста:", error);
   }
 }
+
 
 const baseSepolia = {
         id: 84532,
@@ -59,7 +61,7 @@ const baseSepolia = {
         },
 };
 
-const projectId = "4b8953ae3a579f498e15afac1101b481";
+
 const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
 
 const wagmiConfig = createConfig({ autoConnect: true, connectors: w3mConnectors({ chains, projectId }),
@@ -68,6 +70,42 @@ const ethereumClient = new EthereumClient(wagmiConfig, chains);
 const web3Modal = new Web3Modal({ projectId, cacheProvider: true, theme: "dark" }, ethereumClient);
 
 let userAccount;
+
+function initializeWagmiConfigWithMiniAppConnector() {
+  wagmiConfig = createConfig({
+    autoConnect: true,
+    connectors: [miniAppConnector()],
+    chains: [base],
+    publicClient: w3mProvider({ projectId }),
+    webSocketPublicClient: null,
+  });
+
+  ethereumClient = new EthereumClient(wagmiConfig, [base]);
+}
+
+function showWarpcastWalletButton() {
+  const button = document.createElement('button');
+  button.innerText = 'Connect with Warpcast Wallet';
+  button.style.padding = '10px 20px';
+  button.style.fontSize = '16px';
+  button.style.marginTop = '20px';
+  button.style.cursor = 'pointer';
+
+  document.body.appendChild(button);
+
+  button.addEventListener('click', async () => {
+    try {
+      await connect({ connector: miniAppConnector() });
+
+      // Получаем информацию об аккаунте
+      const account = await getAccount();
+      console.log("Подключен аккаунт:", account);
+      button.style.display = 'none';
+    } catch (error) {
+      console.error('Ошибка при добавлении фрейма:', error);
+    }
+  });
+}
 
 // ===== DOMContentLoaded =========
 document.addEventListener("DOMContentLoaded", async () => {
@@ -83,12 +121,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     loader.style.display = "none";
   }
 });
-
-function getRefCode() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get('ref');
-  return refCode;
-}
 
 // ===== Wallet Connection ==========
 async function checkWalletConnection() {
@@ -116,6 +148,12 @@ async function checkWalletConnection() {
     console.error("Error wallet connection:", err);
     loader.style.display = "none";
   }
+}
+
+function getRefCode() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref');
+  return refCode;
 }
 
 // ===== Sections =========
