@@ -23,6 +23,7 @@ async function detectEnvironment() {
 
       showWarpcastWalletButton();
       initializeWagmiConfigWithMiniAppConnector();
+      console.log(miniAppConnector)
       if (!context.client.added) {
         await sdk.actions.addFrame()
       }
