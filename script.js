@@ -16,12 +16,13 @@ async function detectEnvironment() {
   let inWarpcastSDK = false;
 
   
-  await sdk.actions.addFrame()
+
+  try {
+    await sdk.actions.ready({ disableNativeGestures: true });
+    inWarpcastSDK = true;
+      await sdk.actions.addFrame()
   const context = await sdk.context;
   console.log(context)
-  try {
-    await sdk.actions.ready(); // Скрыть splash screen
-    inWarpcastSDK = true;
   } catch (e) {
     inWarpcastSDK = false;
   }
