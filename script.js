@@ -17,7 +17,7 @@ const projectId = "4b8953ae3a579f498e15afac1101b481";
 
 async function detectEnvironment() {
   try {
-    await sdk.actions.ready({ disableNativeGestures: true });
+    await sdk.actions.ready();
     const context = await sdk.context;
     if (context && context.client) {
 
