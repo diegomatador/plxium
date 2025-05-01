@@ -19,7 +19,7 @@ async function detectEnvironment() {
 console.log(accountAssociation);
   
   await sdk.actions.addFrame()
-  const context = sdk.context;
+  const context = await sdk.context;
   console.log(context)
   try {
     await sdk.actions.ready(); // Скрыть splash screen
