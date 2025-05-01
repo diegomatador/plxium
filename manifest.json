@@ -1,21 +1,27 @@
 {
-  "name": "PLXium Game",
-  "short_name": "PLXium",
-  "description": "A fun and addictive game on the blockchain.",
-  "start_url": "https://plxium.vercel.app",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#ff00aa",
-  "icons": [
-    {
-      "src": "https://plxium.vercel.app/images/logo.webp",
-      "sizes": "192x192",
-      "type": "image/webp"
-    },
-    {
-      "src": "https://plxium.vercel.app/images/logo.webp",
-      "sizes": "512x512",
-      "type": "image/webp"
-    }
-  ]
+  "frame": {
+    "version": "1",
+    "name": "PlXium",
+    "iconUrl": "https://plxium.vercel.app/images/logo.webp",
+    "splashImageUrl": "https://plxium.vercel.app/images/logo.webp",
+    "homeUrl": "https://plxium.vercel.app",
+    "webhookUrl": "https://plxium.vercel.app/webhook",
+    "subtitle": "Mining Game",
+    "description": "Climb the leaderboard in this exciting mining game.",
+    "screenshotUrls": [
+      "https://plxium.vercel.app/images/logo.webp",
+      "https://plxium.vercel.app/images/logo.webp"
+    ],
+    "primaryCategory": "game",
+    "tags": [
+      "mining",
+      "game",
+      "leaderboard"
+    ],
+    "heroImageUrl": "https://plxium.vercel.app/images/logo.webp",
+    "tagline": "PlXium - Your mining adventure starts here",
+    "ogTitle": "PlXium - Mining Game",
+    "ogDescription": "Join the mining game, earn rewards, and climb the leaderboard.",
+    "ogImageUrl": "https://plxium.vercel.app/images/logo.webp"
+  }
 }
