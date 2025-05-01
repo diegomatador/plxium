@@ -1,6 +1,12 @@
 {
-  "name": "PLXium",
-  "description": "Crypto mining game with NFT names and levels",
-  "url": "https://plxium.vercel.app",
-  "icon": "https://plxium.vercel.app/logo.png"
+  "frame": {
+    "version": "1",
+    "name": "PLXium",
+    "iconUrl": "https://plxium.vercel.app/images/logo.webp",
+    "homeUrl": "https://plxium.vercel.app",
+    "imageUrl": "https://plxium.vercel.app/images/logo.webp",
+    "buttonTitle": "🚩 Start",
+    "splashImageUrl": "https://plxium.vercel.app/images/logo.webp",
+    "splashBackgroundColor": "#f5f0ec",
+  }
 }
