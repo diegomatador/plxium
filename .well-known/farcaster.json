@@ -2,11 +2,28 @@
   "frame": {
     "version": "1",
     "name": "PLXium",
-    "iconUrl": "https://plxium.vercel.app/images/logo.webp",
+    "iconUrl": "https://plxium.vercel.app/logo.webp",
     "homeUrl": "https://plxium.vercel.app",
-    "imageUrl": "https://plxium.vercel.app/images/logo.webp",
-    "buttonTitle": "🚩 Start",
-    "splashImageUrl": "https://plxium.vercel.app/images/logo.webp",
-    "splashBackgroundColor": "#f5f0ec",
+    "splashImageUrl": "https://plxium.vercel.app/logo.webp",
+    "splashBackgroundColor": "#000000",
+    "subtitle": "Crypto mining game with NFT names and levels",
+    "description": "Mine, upgrade and earn rewards in a crypto-based NFT game with personalized names.",
+    "screenshotUrls": [
+      "https://plxium.vercel.app/logo.webp",
+      "https://plxium.vercel.app/logo.webp",
+      "https://plxium.vercel.app/logo.webp"
+    ],
+    "primaryCategory": "gaming",
+    "tags": [
+      "NFT",
+      "mining",
+      "crypto",
+      "game"
+    ],
+    "heroImageUrl": "https://plxium.vercel.app/logo.webp",
+    "tagline": "Upgrade your mining game with personalized NFT names!",
+    "ogTitle": "PLXium",
+    "ogDescription": "Climb the leaderboard, upgrade your mining skills, and earn rewards.",
+    "ogImageUrl": "https://plxium.vercel.app/logo.webp"
   }
 }
