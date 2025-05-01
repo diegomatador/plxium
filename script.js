@@ -9,6 +9,25 @@ import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 
 const { base } = WagmiCoreChains;
 const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
+import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
+
+async function detectEnvironment() {
+  const isUserAgentWarpcast = navigator.userAgent.includes("Warpcast");
+  let inWarpcastSDK = false;
+
+  try {
+    await sdk.actions.ready(); // Скрыть splash screen
+    inWarpcastSDK = true;
+  } catch (e) {
+    inWarpcastSDK = false;
+  }
+
+  if (isUserAgentWarpcast || inWarpcastSDK) {
+    console.log("✅ Открыто в Warpcast Mini App");
+  } else {
+    console.log("🌐 Открыто в обычном браузере");
+  }
+}
 
 const baseSepolia = {
         id: 84532,
@@ -48,6 +67,7 @@ let userAccount;
 // ===== DOMContentLoaded =========
 document.addEventListener("DOMContentLoaded", async () => {
   const loader = document.getElementById("loader");
+  await detectEnvironment();
   loader.style.display = "flex";
   try {
     await checkWalletConnection();
