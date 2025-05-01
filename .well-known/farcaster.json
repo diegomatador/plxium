@@ -1,4 +1,8 @@
-{
+{"accountAssociation": {
+    "header": "eyJmaWQiOjM5MDI2OSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDJFNDQzRThDODZEMTRlYjVlOTMxMzYwODczQ2FhOTY3QTNjQjVmNkUifQ",
+    "payload": "eyJkb21haW4iOiJwbHhpdW0udmVyY2VsLmFwcCJ9",
+    "signature": "MHg3NDFmNTIwMzkxNjBiZDE2ZTlhZGY5ZTBjMTkzZTc4NmI5ZWIwMDg4OWY2ODkyZDRhZmUwNmM5NWRjNDZiZjhjNmYyNjQwNzE5NDBjMmVhMTY2MDM5YTJlMWMzNWFmZjhmMzhhN2U3YjdhYWM0MDk1ZDQ0OGM1ZjU2NjhkNGRlOTFi"
+  },
   "frame": {
     "version": "1",
     "name": "PLXium",
