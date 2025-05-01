@@ -21,9 +21,8 @@ async function detectEnvironment() {
     const context = await sdk.context;
     if (context && context.client) {
 
-      showWarpcastWalletButton();
-      initializeWagmiConfigWithMiniAppConnector();
-      console.log(miniAppConnector)
+      await showWarpcastWalletButton();
+      await initializeWagmiConfigWithMiniAppConnector();
       if (!context.client.added) {
         await sdk.actions.addFrame()
       }
@@ -72,7 +71,7 @@ const web3Modal = new Web3Modal({ projectId, cacheProvider: true, theme: "dark" 
 
 let userAccount;
 
-function initializeWagmiConfigWithMiniAppConnector() {
+async function initializeWagmiConfigWithMiniAppConnector() {
   wagmiConfig = createConfig({
     autoConnect: true,
     connectors: [miniAppConnector()],
@@ -84,7 +83,7 @@ function initializeWagmiConfigWithMiniAppConnector() {
   ethereumClient = new EthereumClient(wagmiConfig, [base]);
 }
 
-function showWarpcastWalletButton() {
+async function showWarpcastWalletButton() {
   const button = document.createElement('button');
     button.innerText = 'Connect with Warpcast Wallet';
     button.style.padding = '10px 20px';
@@ -99,11 +98,8 @@ function showWarpcastWalletButton() {
 
   button.addEventListener('click', async () => {
     try {
-      const connector = miniAppConnector();
-      console.log(connector);
-      // Получаем информацию об аккаунте
-      const account = await getAccount();
-      console.log("Подключен аккаунт:", account);
+      await miniAppConnector();
+      await checkWalletConnection();
       button.style.display = 'none';
     } catch (error) {
       console.error('Ошибка при добавлении фрейма:', error);
