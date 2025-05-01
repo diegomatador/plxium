@@ -1,0 +1,21 @@
+{
+  "name": "PlXium Game",
+  "short_name": "PlXium",
+  "description": "A fun and engaging game.",
+  "icons": [
+    {
+      "src": "https://plxium.vercel.app/images/logo.webp",
+      "sizes": "192x192",
+      "type": "image/webp"
+    },
+    {
+      "src": "https://plxium.vercel.app/images/logo.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ],
+  "start_url": "https://plxium.vercel.app",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}
