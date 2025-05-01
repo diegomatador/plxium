@@ -86,11 +86,14 @@ function initializeWagmiConfigWithMiniAppConnector() {
 
 function showWarpcastWalletButton() {
   const button = document.createElement('button');
-  button.innerText = 'Connect with Warpcast Wallet';
-  button.style.padding = '10px 20px';
-  button.style.fontSize = '16px';
-  button.style.marginTop = '20px';
-  button.style.cursor = 'pointer';
+    button.innerText = 'Connect with Warpcast Wallet';
+    button.style.padding = '10px 20px';
+    button.style.fontSize = '16px';
+    button.style.position = 'absolute';
+    button.style.top = '10vh'; 
+    button.style.left = '50%';  
+    button.style.transform = 'translateX(-50%)';  
+    button.style.cursor = 'pointer';
 
   document.body.appendChild(button);
 
