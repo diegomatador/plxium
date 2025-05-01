@@ -14,7 +14,8 @@ import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 async function detectEnvironment() {
   const isUserAgentWarpcast = navigator.userAgent.includes("Warpcast");
   let inWarpcastSDK = false;
-
+  const context = sdk.context;
+  console.log(context)
   try {
     await sdk.actions.ready(); // Скрыть splash screen
     inWarpcastSDK = true;
