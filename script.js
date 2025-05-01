@@ -11,9 +11,8 @@ const { base } = WagmiCoreChains;
 const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
-import { farcasterFrame as miniAppConnector } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
+import { farcasterFrame } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
 const projectId = "4b8953ae3a579f498e15afac1101b481";
-
 
 const baseSepolia = {
         id: 84532,
@@ -39,24 +38,99 @@ const baseSepolia = {
           },
         },
 };
-const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
-const wagmiConfig = createConfig({
+
+async function getPlatform() {
+  try {
+    const context = await sdk.context;
+    let wagmiConfig;
+    let chains;
+
+    if (context && context.client) {
+      wagmiConfig = createConfig({
+        autoConnect: true,
+        connectors: [farcasterFrame()],
+        chains: [base],
+        publicClient: w3mProvider({ projectId }),
+        webSocketPublicClient: null,
+      });
+      const provider = sdk.wallet.ethProvider;
+      console.log("✅ Открыто в Warpcast Mini App");
+    } else {
+      const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
+
+      wagmiConfig = createConfig({
         autoConnect: true,
         connectors: w3mConnectors({ chains, projectId }),
         publicClient,
         webSocketPublicClient,
       });
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
-const web3Modal = new Web3Modal({ projectId, cacheProvider: true, theme: "dark" }, ethereumClient);
+
+      console.log("🌐 Открыто в обычном браузере");
+    }
+    const ethereumClient = new EthereumClient(wagmiConfig, chains);
+    const web3Modal = new Web3Modal({ projectId, cacheProvider: true, theme: "dark" }, ethereumClient);
+  } catch (error) {
+    console.error("Ошибка при определении платформы:", error);
+  }
+}
+
+async function connectWallet() {
+  const connector = farcasterFrame(); // Получаем коннектор Farcaster
+  try {
+    const { accounts, chainId } = await connector.connect(); // Подключаемся к кошельку
+    console.log("Подключены аккаунты:", accounts);
+    console.log("Текущий ChainId:", chainId);
+  } catch (error) {
+    console.error("Ошибка при подключении кошелька:", error);
+  }
+}
+
+// Функция для отключения кошелька
+async function disconnectWallet() {
+  const connector = farcasterFrame();
+  try {
+    await connector.disconnect(); // Отключаем кошелек
+    console.log("Кошелек отключен");
+  } catch (error) {
+    console.error("Ошибка при отключении кошелька:", error);
+  }
+}
 
 let userAccount;
 
+async function showWarpcastWalletButton() {
+    const button = document.createElement('button');
+    button.innerText = 'Connect with Warpcast Wallet';
+    button.style.padding = '10px 20px';
+    button.style.fontSize = '16px';
+    button.style.position = 'absolute';
+    button.style.top = '10vh';
+    button.style.left = '50%';
+    button.style.transform = 'translateX(-50%)';
+    button.style.cursor = 'pointer';
+
+  document.body.appendChild(button);
+
+  button.addEventListener('click', async () => {
+    try {
+      await connect({ connector: miniAppConnector() });
+
+      // Получаем информацию об аккаунте
+      const account = await getAccount();
+      console.log("Подключен аккаунт:", account);
+      button.style.display = 'none';
+    } catch (error) {
+      console.error('Ошибка при добавлении фрейма:', error);
+    }
+  });
+}
 
 // ===== DOMContentLoaded =========
 document.addEventListener("DOMContentLoaded", async () => {
   const loader = document.getElementById("loader");
   loader.style.display = "flex";
   try {
+    await getPlatform();
     await checkWalletConnection();
     setupSectionButtons();
   } catch (err) {
@@ -71,14 +145,6 @@ async function checkWalletConnection() {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
   try {
-    if (context && context.client) {
-      if (!context.client.added) {
-        await sdk.actions.addFrame()
-      }
-      console.log("✅ Открыто в Warpcast Mini App");
-    } else {
-      console.log("🌐 Открыто в обычном браузере");
-    }
     const w3mCore = document.getElementById("w3mСore");
     const account = getAccount();
 
@@ -88,6 +154,16 @@ async function checkWalletConnection() {
       userAccount = account.address;
       checkPriorityName();
     } else {
+
+    if (context && context.client) {
+      if (!context.client.added) {
+        await sdk.actions.addFrame()
+      }
+      console.log("✅ Открыто в Warpcast Mini App");
+    } else {
+      console.log("🌐 Открыто в обычном браузере");
+    }
+
       const unwatch = watchAccount((updatedAccount) => {
         if (updatedAccount.isConnected) {
           unwatch();
