@@ -99,8 +99,8 @@ function showWarpcastWalletButton() {
 
   button.addEventListener('click', async () => {
     try {
-      await connect({ connector: miniAppConnector() });
-
+      const connector = miniAppConnector();
+      console.log(connector);
       // Получаем информацию об аккаунте
       const account = await getAccount();
       console.log("Подключен аккаунт:", account);
