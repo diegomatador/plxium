@@ -14,9 +14,7 @@ import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 async function detectEnvironment() {
   const isUserAgentWarpcast = navigator.userAgent.includes("Warpcast");
   let inWarpcastSDK = false;
-  const accountAssociation = await sdk.actions.getAccountAssociation();
 
-console.log(accountAssociation);
   
   await sdk.actions.addFrame()
   const context = await sdk.context;
