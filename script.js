@@ -38,13 +38,13 @@ const baseSepolia = {
           },
         },
 };
-
+let wagmiConfig;
+let chains;
 async function getPlatform() {
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
-    let wagmiConfig;
-    let chains;
+    
 
     if (context && context.client) {
       const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
