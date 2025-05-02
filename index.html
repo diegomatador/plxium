@@ -2,134 +2,250 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Farcaster Wallet Address</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>PlXium</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rubik&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7fb;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      width: 300px;
-    }
-
-    h1 {
-      font-size: 24px;
-      color: #4a90e2;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      font-size: 18px;
-      color: #555;
-      margin-bottom: 15px;
-    }
-
-    p {
-      font-size: 16px;
-      margin-bottom: 20px;
-      word-wrap: break-word;
-      color: #666;
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #357ab7;
-    }
-
-    button:active {
-      background-color: #2a6492;
-    }
+    body { margin: 0; background: url('images/backend.webp');
+      background-size: 100% 100%;
+      display: flex; flex-direction: column; min-height: 100vh; user-select: none;
+       -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -webkit-touch-callout: none; }
+    img { user-drag: none; -webkit-user-drag: none; }
+    body.site-active { background-position: right center; background-repeat: no-repeat; background-size: 75% 100%; }
+    @media (max-width: 768px) { body.site-active { background-size: 100% 100%; } }
   </style>
-  <script type="module">
-    import sdk from 'https://esm.sh/@farcaster/frame-sdk';
+    <style>
+w3m-core-button {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
 
-    let ethProvider;
-    let context;
-
-    async function init() {
-      // Проверяем, доступен ли Farcaster SDK и ethProvider
-      if (sdk?.wallet?.ethProvider) {
-        ethProvider = sdk.wallet.ethProvider;
-        
-        // Загрузка контекста Farcaster
-        context = await sdk.context;
-        sdk.actions.ready();
-
-        // Получаем адрес через ethProvider
-        const address = await getFarcasterAddress();
-        document.getElementById("address").textContent = address || "Not connected";
-        
-        // Проверяем, подключён ли кошелёк
-        const isConnected = await ethProvider.request({ method: 'eth_accounts' }).then(accounts => accounts.length > 0);
-        document.getElementById("connect-btn").textContent = isConnected ? "Disconnect" : "Connect";
-        
-        document.getElementById("connect-btn").onclick = isConnected ? disconnect : connect;
-      } else {
-        console.log("Farcaster wallet not available");
-        document.getElementById("address").textContent = "Farcaster wallet not available";
-      }
-    }
-
-    // Получение адреса через ethProvider
-    async function getFarcasterAddress() {
-      try {
-        const accounts = await ethProvider.request({ method: 'eth_accounts' });
-        return accounts[0] || null;
-      } catch (err) {
-        console.error("Error getting address:", err);
-        return null;
-      }
-    }
-
-    // Подключение к Farcaster кошельку
-    async function connect() {
-      try {
-        await ethProvider.request({ method: 'eth_requestAccounts' });
-        init(); // Перезагружаем информацию после подключения
-      } catch (err) {
-        console.error("Error connecting to Farcaster:", err);
-      }
-    }
-
-    // Отключение от кошелька
-    async function disconnect() {
-      // Для Farcaster SDK отключение происходит через браузер, так что здесь не требуется действий
-      alert("Disconnecting is handled by the Farcaster client.");
-      document.getElementById("address").textContent = "Not connected";
-      document.getElementById("connect-btn").textContent = "Connect";
-    }
-
-    window.addEventListener('DOMContentLoaded', init);
-  </script>
+  --w3m-accent-color: black;
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Farcaster Wallet</h1>
-    <h2>Wallet Address:</h2>
-    <p id="address">Loading...</p>
-    <button id="connect-btn">Connect</button>
-  </div>
+    <div id="loader" class="loader"></div>
+    <w3m-core-button id="w3mСore" style="position: fixed; top: 50%; left: 50%;  transform: translate(-50%, -50%); z-index: 2; --w3m-accent-color: #0e6073;"></w3m-core-button>
+    <div id="mintSection">
+      <div style="color: white; text-align: center; margin-bottom: 20px;">
+        <h2 style="font-size: 2em; letter-spacing: 2px; color: #00f5ff; margin-bottom: 5px;">PLXium</h2>
+        <p style="font-family: 'Rubik', sans-serif; color: #ccc; font-size: 0.95em;">Your name’s your pass. <br><strong style="color: #00f5ff;">Your grind starts now.</strong></p>
+        <p style="margin-top: 15px;">Mint price by name length:</p>
+        <ul style="list-style: none; padding: 0; margin: 10px 0; font-size: 0.9em;">
+          <li>✨ <strong>3 letters</strong> — 0.01 ETH</li>
+          <li>🔹 <strong>4 letters</strong> — 0.005 ETH</li>
+          <li>🔸 <strong>5 letters</strong> — 0.003 ETH</li>
+          <li>🟢 <strong>6+ letters</strong> — 0.001 ETH</li>
+        </ul>
+        <p style="font-size: 0.8em; color: #888; font-family: 'Rubik', sans-serif;">* Unique names, min 3 chars</p>
+      </div>
+
+      <input type="text" id="nameInput" placeholder="Enter your name" style="margin-bottom: 10px; padding: 8px; width: 200px; border-radius: 6px; border: none;" />
+      <input type="text" id="refcodeInput" style="margin-bottom: 10px; padding: 8px; width: 200px; border-radius: 6px; border: none;" placeholder="Enter your ref code" />
+      <button id="mintBtn" style="padding: 10px 20px; border: none; background-color: #00f5ff; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer;">Mint</button>
+      <div id="mintStatus" style="color:white; margin-top:10px;"></div>
+    </div>
+
+    <div class="site" id="site" style="display: none;">
+        <div class="side-menu" id="sideMenu">
+          <div class="logo">
+            <img src="images/logo.webp" alt="PlXium">
+            <h2>PLXium</h2>
+          </div>
+          <button class="active" id="miningbtn">Mining</button>
+          <button aria-label="Profile" id="profilebtn">Profile</button>
+          <button aria-label="Invite" id="invitebtn">Invite</button>
+          <button aria-label="Leaderboard" id="leaderboardbtn">Leaderboard</button>
+          <button aria-label="About" id="aboutbtn">About</button>
+
+          <div class="footer-icons">
+            <img src="images/x.webp" alt="X" onclick="window.open('https://x.com/plxium', '_blank');">
+            <img src="images/telegram.webp" alt="Telegram" onclick="window.open('https://t.me/plxium', '_blank');">
+            <img src="images/warpcast.webp" alt="Warpcast" onclick="window.open('https://warpcast.com/ploxoy', '_blank');">
+        </div>
+        </div>
+        <div class="menu-handle" id="menuHandle" onclick="toggleMenu()"><span>&#8801</span></div>
+        <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+        <div class="profile">
+            <img src="images/profile.webp" id="profileImg">
+            <span class="name" id="name"></span>
+        </div>
+
+    <div class="mining" id="mining" style="display: none;">
+          <div class="top-stats">
+              <div class="stat-box">
+              <span class="label">Level</span>
+              <span class="level" id="level"></span>
+            </div>
+            <div class="stat-box">
+              <span class="label">Balance</span>
+              <span class="balance" id="balance">0 PLX</span>
+            </div>
+            <div class="stat-box">
+              <span class="label">T/12h</span>
+              <span class="rewarddaily" id="rewarddaily">3</span>
+            </div>
+
+          </div>
+         <div class="level-progress-container">
+              <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+              </div>
+         </div>
+          <div class="mining-center">
+          <div class="image-wrapper" id="image-wrapper">
+            <img src="images/mininglogo.webp" id="miningImg">
+            <div class="neon-square" id="neonsquare"></div>
+            <div class="blinking-circle" id="blinkingcircle"></div>
+            <button id="collectr" class="collect-button" style="display: none;">Collect Reward</button>
+          </div>
+          <button class="powerup" id="powerup">...</button>
+        </div>
+    </div>
+
+    <div id="profile" style="display: none;">
+        <div class="topprofile">
+          <img src="images/profile.webp" id="profilelogo" />
+          <div class="info">
+            <span id="username">...</span>
+            <p>
+              <strong>
+                <span id="useraddress">...</span>
+                <span id="copyAddr" class="fas fa-copy"></span>
+              </strong>
+            </p>
+          </div>
+        <button id="mintMoreToggle">Mint More Name</button>
+        </div>
+        <div class="names-container" id="namesContainer"></div>
+    </div>
+
+    <div class="mintmore-overlay" id="mintOverlay" style="display: none;">
+      <div class="mintmore" id="mintmore">
+        <input type="text" id="namein" placeholder="Enter name" />
+        <button id="mintmoreBtn">Mint</button>
+        <div id="mintSs"></div>
+      </div>
+    </div>
+
+    <div id="invite" style="display: none;">
+      <div class="ref-link-container">
+        <p>Referral Code:</p>
+        <div class="ref-link-box">
+          <span id="refLink">https://plxium.xyz/?ref=xxxxxx</span>
+          <button id="copyRefBtn" class="copy-btn">Copy</button>
+        </div>
+      </div>
+      <div class="referrals-list" id="referralsList">
+      </div>
+    </div>
+
+    <div id="leaderboard" style="display: none;">
+      <div class="player-rank highlight-player">
+          <div class="player-column">
+            <span class="label">RANK</span>
+            <span class="player-rank-number" id="player-rank">#1</span>
+          </div>
+          <div class="player-column">
+            <span class="label">NAME</span>
+            <span class="player-name" id="player-name">name</span>
+          </div>
+          <div class="player-column">
+            <span class="label">BALANCE</span>
+            <span class="player-balance" id="player-balance">0</span>
+          </div>
+        </div>
+      <div class="top-players-list" id="topPlayersList">
+      </div>
+    </div>
+    <div id="about" style="display: none;">
+      <h2>About PLXium</h2>
+      <p>
+        <strong>PLXium</strong> is a crypto-powered mining game where you build and upgrade your own mining rig to collect coins and climb the leaderboard.
+      </p>
+      <ul>
+        <li>⛏️ Mine coins daily and grow your balance</li>
+        <li>⚙️ Upgrade your miner to boost efficiency</li>
+        <li>🏆 Compete in the global leaderboard</li>
+        <li>🎁 Invite friends and earn 300 PLX for each one!</li>
+      </ul>
+      <p class="final-call">
+        Start mining, upgrade smart, and become a top PLXium miner!
+      </p>
+    </div>
+    </div>
+<script type="module" src="script.js"></script>
+<script>
+  const sideMenu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('overlay');
+  const menuHandle = document.getElementById('menuHandle');
+  const menuHandleSpan = menuHandle.querySelector('span');
+  const buttons = document.querySelectorAll('.side-menu button');
+
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (window.innerWidth <= 768) closeMenu();
+    });
+  });
+
+  function toggleMenu() {
+      sideMenu.classList.toggle('active');
+      overlay.classList.toggle('active');
+      if (sideMenu.classList.contains('active') && window.innerWidth <= 768) {
+        menuHandle.style.display = 'none';
+      } else {
+        menuHandle.style.display = 'flex';
+      }
+    }
+
+  function closeMenu() {
+      sideMenu.classList.remove('active');
+      overlay.classList.remove('active');
+
+      if (window.innerWidth <= 768) {
+        menuHandle.style.display = 'flex';
+      }
+    }
+
+  document.addEventListener('touchstart', (event) => {
+    if (sideMenu.classList.contains('active')) {
+      touchStartX = event.touches[0].clientX;
+    } else if (event.touches[0].clientX <= window.innerWidth * 0.3) {
+      touchStartX = event.touches[0].clientX;
+    }
+  });
+
+  document.addEventListener('touchend', (event) => {
+    if (touchStartX !== 0) {
+      touchEndX = event.changedTouches[0].clientX;
+      handleGesture();
+      touchStartX = 0;
+    }
+  });
+
+  function handleGesture() {
+    const diffX = touchEndX - touchStartX;
+    if (diffX < -50 && sideMenu.classList.contains('active')) {
+      closeMenu();
+    }
+  }
+
+  document.addEventListener('click', (event) => {
+    if (!sideMenu.contains(event.target) && !menuHandle.contains(event.target) && window.innerWidth <= 768) {
+      closeMenu();
+    }
+  });
+</script>
 </body>
 </html>
