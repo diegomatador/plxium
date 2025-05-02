@@ -11,8 +11,7 @@ const { base } = WagmiCoreChains;
 const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
-console.log(sdk)
-import { farcasterFrame as frameConnector } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
+
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
 const baseSepolia = {
@@ -39,23 +38,16 @@ const baseSepolia = {
           },
         },
 };
-let wagmiConfig;
-let chains;
+
 async function getPlatform() {
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
-    
+    let wagmiConfig;
+    let chains;
 
     if (context && context.client) {
-      const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
-
-      wagmiConfig = createConfig({
-        autoConnect: true,
-        connectors: w3mConnectors({ chains, projectId }),
-        publicClient,
-        webSocketPublicClient,
-      });
+        ethProvider = sdk.wallet.ethProvider;
       console.log("✅ Открыто в Warpcast Mini App");
     } else {
       const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
@@ -79,30 +71,26 @@ async function getPlatform() {
 let userAccount;
 
 async function showWarpcastWalletButton() {
-  const button = document.createElement('button');
-  button.innerText = 'Connect with Warpcast Wallet';
-  button.style.padding = '10px 20px';
-  button.style.fontSize = '16px';
-  button.style.position = 'absolute';
-  button.style.top = '10vh';
-  button.style.left = '50%';
-  button.style.transform = 'translateX(-50%)';
-  button.style.cursor = 'pointer';
+    const button = document.createElement('button');
+    button.innerText = 'Connect with Warpcast Wallet';
+    button.style.padding = '10px 20px';
+    button.style.fontSize = '16px';
+    button.style.position = 'absolute';
+    button.style.top = '10vh';
+    button.style.left = '50%';
+    button.style.transform = 'translateX(-50%)';
+    button.style.cursor = 'pointer';
 
   document.body.appendChild(button);
 
   button.addEventListener('click', async () => {
     try {
-            console.log(wagmiConfig.connectors[0])
-      // Подключаемся через Farcaster Frame Connector
-      const dd = await connect({ connector: wagmiConfig.connectors[0] });
-        
-      // Получаем информацию об аккаунте
+     await ethProvider.request({ method: 'eth_requestAccounts' });
       const account = getAccount();
       console.log("Подключен аккаунт:", account);
-      button.style.display = 'none'; // Скрываем кнопку после подключения
+      button.style.display = 'none';
     } catch (error) {
-      console.error('Ошибка при подключении:', error);
+      console.error('Ошибка при добавлении фрейма:', error);
     }
   });
 }
