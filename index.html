@@ -2,120 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Frames v2 Demo (HTML + JS)</title>
+  <title>Farcaster Wallet Address</title>
   <script type="module">
     import sdk from 'https://esm.sh/@farcaster/frame-sdk';
-    import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
-    import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 
-    const { base } = WagmiCoreChains;
-    const {
-      configureChains,
-      createConfig,
-      connect,
-      disconnect,
-      getAccount,
-      watchAccount
-    } = WagmiCore;
-
-    const projectId = "4b8953ae3a579f498e15afac1101b481";// ← вставь свой WalletConnect Project ID
-    const chains = [base];
-    const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
-
-    const wagmiConfig = createConfig({
-      autoConnect: true,
-      connectors: w3mConnectors({ projectId, chains }),
-      publicClient
-    });
-
-    const ethereumClient = new EthereumClient(wagmiConfig, chains);
-    const modal = new Web3Modal({ projectId, themeMode: "light" }, ethereumClient);
-
-    let context = null;
-    let isSDKLoaded = false;
+    let ethProvider;
 
     async function init() {
-      const statusEl = document.getElementById("status");
-      const addressEl = document.getElementById("address");
-      const connectBtn = document.getElementById("connect-btn");
-
-      if (!isSDKLoaded) {
-        try {
-          context = await sdk.context;
-          sdk.actions.ready();
-          isSDKLoaded = true;
-          console.log("SDK Loaded:", context);
-        } catch (e) {
-          console.warn("SDK not in Farcaster frame");
-        }
-      }
-
-      function updateUI(address) {
-        addressEl.textContent = address || "Not connected";
-        connectBtn.textContent = address ? "Disconnect" : "Connect";
-      }
-
-      async function handleConnectDisconnect() {
-        const acc = getAccount();
-        if (acc?.address) {
-          disconnect();
-          updateUI(null);
-        } else {
-          await connect({ connector: wagmiConfig.connectors[0] });
-          const newAcc = getAccount();
-          updateUI(newAcc.address);
-        }
-      }
-
-      // Set initial state
-      const farcasterAddr = context?.connectedAddress;
-      const walletAddr = getAccount()?.address;
-
-      if (farcasterAddr) {
-        updateUI(farcasterAddr);
-      } else if (walletAddr) {
-        updateUI(walletAddr);
+      // Проверяем, доступен ли Farcaster SDK и ethProvider
+      if (sdk?.wallet?.ethProvider) {
+        ethProvider = sdk.wallet.ethProvider;
+        
+        // Получаем адрес через ethProvider
+        const address = await getFarcasterAddress();
+        document.getElementById("address").textContent = address || "Not connected";
+        
+        // Проверяем, подключён ли кошелёк
+        const isConnected = await ethProvider.request({ method: 'eth_accounts' }).then(accounts => accounts.length > 0);
+        document.getElementById("connect-btn").textContent = isConnected ? "Disconnect" : "Connect";
+        
+        document.getElementById("connect-btn").onclick = isConnected ? disconnect : connect;
       } else {
-        updateUI(null);
+        console.log("Farcaster wallet not available");
+        document.getElementById("address").textContent = "Farcaster wallet not available";
       }
+    }
 
-      connectBtn.onclick = handleConnectDisconnect;
+    // Получение адреса через ethProvider
+    async function getFarcasterAddress() {
+      try {
+        const accounts = await ethProvider.request({ method: 'eth_accounts' });
+        return accounts[0] || null;
+      } catch (err) {
+        console.error("Error getting address:", err);
+        return null;
+      }
+    }
 
-      watchAccount((account) => {
-        updateUI(account.address);
-      });
+    // Подключение к Farcaster кошельку
+    async function connect() {
+      try {
+        await ethProvider.request({ method: 'eth_requestAccounts' });
+        init(); // Перезагружаем информацию после подключения
+      } catch (err) {
+        console.error("Error connecting to Farcaster:", err);
+      }
+    }
+
+    // Отключение от кошелька
+    async function disconnect() {
+      // Для Farcaster SDK отключение происходит через браузер, так что здесь не требуется действий
+      alert("Disconnecting is handled by the Farcaster client.");
+      document.getElementById("address").textContent = "Not connected";
+      document.getElementById("connect-btn").textContent = "Connect";
     }
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
-
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 300px;
-      margin: auto;
-      padding: 2rem;
-    }
-    h1 {
-      text-align: center;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      font-size: 16px;
-      margin-top: 1rem;
-    }
-    .section {
-      margin-bottom: 1.5rem;
-    }
-  </style>
 </head>
 <body>
-  <h1>Frames v2 Demo</h1>
-  <div class="section">
-    <h2>Wallet</h2>
-    <p><strong>Address:</strong> <span id="address">Loading...</span></p>
+  <h1>Farcaster Wallet Address</h1>
+  <div>
+    <h2>Wallet Address:</h2>
+    <p id="address">Loading...</p>
     <button id="connect-btn">Connect</button>
   </div>
 </body>
