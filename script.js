@@ -136,6 +136,7 @@ async function checkWalletConnection() {
       userAccount = account.address;
       checkPriorityName();
     } else {
+            await showWarpcastWalletButton();
       const unwatch = watchAccount((updatedAccount) => {
         if (updatedAccount.isConnected) {
           unwatch();
