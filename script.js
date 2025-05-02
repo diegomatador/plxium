@@ -11,7 +11,7 @@ const { base } = WagmiCoreChains;
 const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
-import { farcasterFrame } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
+import { farcasterFrame as frameConnector } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
 const baseSepolia = {
@@ -41,14 +41,20 @@ const baseSepolia = {
 
 async function getPlatform() {
   try {
+    await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
+    if (context && context.client) {
+      if (!context.client.added) {
+        await sdk.actions.addFrame()
+      }
+    }
     let wagmiConfig;
     let chains;
 
     if (context && context.client) {
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [farcasterFrame()],
+        connectors: [frameConnector()],
         chains: [base],
         publicClient: w3mProvider({ projectId }),
         webSocketPublicClient: null,
@@ -74,28 +80,6 @@ async function getPlatform() {
   }
 }
 
-async function connectWallet() {
-  const connector = farcasterFrame(); // Получаем коннектор Farcaster
-  try {
-    const { accounts, chainId } = await connector.connect(); // Подключаемся к кошельку
-    console.log("Подключены аккаунты:", accounts);
-    console.log("Текущий ChainId:", chainId);
-  } catch (error) {
-    console.error("Ошибка при подключении кошелька:", error);
-  }
-}
-
-// Функция для отключения кошелька
-async function disconnectWallet() {
-  const connector = farcasterFrame();
-  try {
-    await connector.disconnect(); // Отключаем кошелек
-    console.log("Кошелек отключен");
-  } catch (error) {
-    console.error("Ошибка при отключении кошелька:", error);
-  }
-}
-
 let userAccount;
 
 async function showWarpcastWalletButton() {
@@ -113,7 +97,7 @@ async function showWarpcastWalletButton() {
 
   button.addEventListener('click', async () => {
     try {
-      await connect({ connector: miniAppConnector() });
+      await connect({ connector: frameConnector() })}
 
       // Получаем информацию об аккаунте
       const account = await getAccount();
@@ -142,8 +126,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // ===== Wallet Connection ==========
 async function checkWalletConnection() {
-    await sdk.actions.ready({ disableNativeGestures: true });
-    const context = await sdk.context;
   try {
     const w3mCore = document.getElementById("w3mСore");
     const account = getAccount();
@@ -154,16 +136,6 @@ async function checkWalletConnection() {
       userAccount = account.address;
       checkPriorityName();
     } else {
-
-    if (context && context.client) {
-      if (!context.client.added) {
-        await sdk.actions.addFrame()
-      }
-      console.log("✅ Открыто в Warpcast Mini App");
-    } else {
-      console.log("🌐 Открыто в обычном браузере");
-    }
-
       const unwatch = watchAccount((updatedAccount) => {
         if (updatedAccount.isConnected) {
           unwatch();
@@ -174,6 +146,7 @@ async function checkWalletConnection() {
         }
       });
     }
+
   } catch (err) {
     console.error("Error wallet connection:", err);
     loader.style.display = "none";
@@ -417,8 +390,7 @@ async function profileInfo() {
     });
     console.log(name)
     nameProfile.textContent = name;
-    const imageUrl = image.replace("ipfs://", "https://ipfs.io/ipfs/");
-    Profilelogo.src = imageUrl;
+
 
     const namesContainer = document.getElementById('namesContainer');
     namesContainer.innerHTML = '';
@@ -501,8 +473,7 @@ async function getPriorityName(bnn, funcc) {
     });
     if (name && nameProfile) {
       nameProfile.textContent = name;
-      const imageUrl = image.replace("ipfs://", "https://ipfs.io/ipfs/");
-      profileImg.src = imageUrl;
+
     }
     else {
       nameProfile.textContent = "Unnamed";
