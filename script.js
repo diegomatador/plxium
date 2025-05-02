@@ -92,9 +92,10 @@ async function showWarpcastWalletButton() {
 
   button.addEventListener('click', async () => {
     try {
+            console.log(wagmiConfig.connectors[0])
       // Подключаемся через Farcaster Frame Connector
       const dd = await connect({ connector: wagmiConfig.connectors[0] });
-        console.log(dd)
+        
       // Получаем информацию об аккаунте
       const account = getAccount();
       console.log("Подключен аккаунт:", account);
