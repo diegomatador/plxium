@@ -11,6 +11,7 @@ const { base } = WagmiCoreChains;
 const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
+console.log(sdk)
 import { farcasterFrame as frameConnector } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
