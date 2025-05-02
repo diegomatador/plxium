@@ -47,12 +47,13 @@ async function getPlatform() {
     let chains;
 
     if (context && context.client) {
+      const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
+
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [frameWalletConnector],
-        chains: [base],
-        publicClient: w3mProvider({ projectId }),
-        webSocketPublicClient: null,
+        connectors: w3mConnectors({ chains, projectId }),
+        publicClient,
+        webSocketPublicClient,
       });
       console.log("✅ Открыто в Warpcast Mini App");
     } else {
