@@ -13,7 +13,8 @@ const { connect, watchAccount, waitForTransaction, writeContract, configureChain
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 import { farcasterFrame as frameConnector } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
 const projectId = "4b8953ae3a579f498e15afac1101b481";
-const frameWalletConnector = frameConnector();
+
+console.log(frameConnector)
 const baseSepolia = {
         id: 84532,
         name: 'Base Sepolia',
