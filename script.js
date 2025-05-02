@@ -38,7 +38,7 @@ const baseSepolia = {
           },
         },
 };
-
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
 async function getPlatform() {
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
@@ -47,6 +47,8 @@ async function getPlatform() {
     let chains;
 
     if (context && context.client) {
+        const accounts = await ethereumClient.connect();
+        console.log("Подключенные аккаунты:", accounts);
         ethProvider = sdk.wallet.ethProvider;
       console.log("✅ Открыто в Warpcast Mini App");
     } else {
@@ -61,7 +63,7 @@ async function getPlatform() {
 
       console.log("🌐 Открыто в обычном браузере");
     }
-    const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
     const web3Modal = new Web3Modal({ projectId, cacheProvider: true, theme: "dark" }, ethereumClient);
   } catch (error) {
     console.error("Ошибка при определении платформы:", error);
