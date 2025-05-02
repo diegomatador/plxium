@@ -97,7 +97,12 @@ async function showWarpcastWalletButton() {
 
   button.addEventListener('click', async () => {
     try {
-      await connect({ connector: frameConnector() });
+      if (!frameWalletConnector) {
+        frameWalletConnector = frameConnector(); // создаём один раз
+      }
+
+      // Вызов connect с нужным connector
+      await connect({ connector: frameWalletConnector });
 
       // Получаем информацию об аккаунте
       const account = await getAccount();
