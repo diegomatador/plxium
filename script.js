@@ -43,22 +43,17 @@ async function getPlatform() {
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
-    if (context && context.client) {
-      if (!context.client.added) {
-        await sdk.actions.addFrame()
-      }
-    }
     let wagmiConfig;
     let chains;
 
     if (context && context.client) {
-      const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
-
+        frameWalletConnector = frameConnector();
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: w3mConnectors({ chains, projectId }),
-        publicClient,
-        webSocketPublicClient,
+        connectors: [frameWalletConnector],
+        chains: [base],
+        publicClient: w3mProvider({ projectId }),
+        webSocketPublicClient: null,
       });
       console.log("✅ Открыто в Warpcast Mini App");
     } else {
@@ -97,13 +92,7 @@ async function showWarpcastWalletButton() {
 
   button.addEventListener('click', async () => {
     try {
-      if (!frameWalletConnector) {
-        frameWalletConnector = frameConnector(); // создаём один раз
-      }
-
-      // Вызов connect с нужным connector
-      await connect({ connector: frameWalletConnector });
-
+     await connect({ connector: frameWalletConnector });
       // Получаем информацию об аккаунте
       const account = await getAccount();
       console.log("Подключен аккаунт:", account);
@@ -141,7 +130,7 @@ async function checkWalletConnection() {
       userAccount = account.address;
       checkPriorityName();
     } else {
-            await showWarpcastWalletButton();
+        await showWarpcastWalletButton();
       const unwatch = watchAccount((updatedAccount) => {
         if (updatedAccount.isConnected) {
           unwatch();
