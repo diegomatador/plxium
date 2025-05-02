@@ -3,16 +3,80 @@
 <head>
   <meta charset="UTF-8" />
   <title>Farcaster Wallet Address</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fb;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #4a90e2;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
+      word-wrap: break-word;
+      color: #666;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #357ab7;
+    }
+
+    button:active {
+      background-color: #2a6492;
+    }
+  </style>
   <script type="module">
     import sdk from 'https://esm.sh/@farcaster/frame-sdk';
 
     let ethProvider;
+    let context;
 
     async function init() {
       // Проверяем, доступен ли Farcaster SDK и ethProvider
       if (sdk?.wallet?.ethProvider) {
         ethProvider = sdk.wallet.ethProvider;
         
+        // Загрузка контекста Farcaster
+        context = await sdk.context;
+        sdk.actions.ready();
+
         // Получаем адрес через ethProvider
         const address = await getFarcasterAddress();
         document.getElementById("address").textContent = address || "Not connected";
@@ -61,8 +125,8 @@
   </script>
 </head>
 <body>
-  <h1>Farcaster Wallet Address</h1>
-  <div>
+  <div class="container">
+    <h1>Farcaster Wallet</h1>
     <h2>Wallet Address:</h2>
     <p id="address">Loading...</p>
     <button id="connect-btn">Connect</button>
