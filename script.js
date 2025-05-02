@@ -14,7 +14,6 @@ import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 import { farcasterFrame as frameConnector } from 'https://esm.sh/@farcaster/frame-wagmi-connector'
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
-console.log(frameConnector)
 const baseSepolia = {
         id: 84532,
         name: 'Base Sepolia',
@@ -79,27 +78,29 @@ async function getPlatform() {
 let userAccount;
 
 async function showWarpcastWalletButton() {
-    const button = document.createElement('button');
-    button.innerText = 'Connect with Warpcast Wallet';
-    button.style.padding = '10px 20px';
-    button.style.fontSize = '16px';
-    button.style.position = 'absolute';
-    button.style.top = '10vh';
-    button.style.left = '50%';
-    button.style.transform = 'translateX(-50%)';
-    button.style.cursor = 'pointer';
+  const button = document.createElement('button');
+  button.innerText = 'Connect with Warpcast Wallet';
+  button.style.padding = '10px 20px';
+  button.style.fontSize = '16px';
+  button.style.position = 'absolute';
+  button.style.top = '10vh';
+  button.style.left = '50%';
+  button.style.transform = 'translateX(-50%)';
+  button.style.cursor = 'pointer';
 
   document.body.appendChild(button);
 
   button.addEventListener('click', async () => {
     try {
-     await connect({ connector: frameWalletConnector });
+      // Подключаемся через Farcaster Frame Connector
+      await frameConnector().connect();
+
       // Получаем информацию об аккаунте
-      const account = await getAccount();
+      const account = await frameConnector().getAccounts();
       console.log("Подключен аккаунт:", account);
-      button.style.display = 'none';
+      button.style.display = 'none'; // Скрываем кнопку после подключения
     } catch (error) {
-      console.error('Ошибка при добавлении фрейма:', error);
+      console.error('Ошибка при подключении:', error);
     }
   });
 }
