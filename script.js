@@ -1195,10 +1195,10 @@ let contractABI2 = [
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 
+let publicClient;
 let wagmiConfig;
 let ethereumClient;
 
-let publicClient;
 let webSocketPublicClient;
 
 const { base } = WagmiCoreChains;
@@ -1227,14 +1227,15 @@ async function getPlatform() {
       // ✅ Открыто в Warpcast
       const ethProvider = sdk.wallet.ethProvider;
 
-      const publicClient = createPublicClient({
-      transport: custom(ethProvider),
-      chain: base,
-    });
+      publicClient = createPublicClient({
+        transport: http("https://base.llamarpc.com"), // можно любой другой Base RPC
+        chain: base,
+      });
 
+      // Подключаем только провайдер к Wagmi
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [],
+        connectors: [], // мы не подключаем Web3Modal
         publicClient,
       });
 
@@ -1435,28 +1436,21 @@ document.getElementById("mintMoreToggle").addEventListener("click", () => {
 
 async function checkPriorityName() {
   try {
-    // Выбираем правильный client для чтения
-    const client = isWarpcast
-      ? createPublicClient({
-          transport: http('https://base.llamarpc.com'), // или другой RPC, не sdk.wallet.ethProvider
-          chain: base,
-        })
-      : publicClient;
 
     const hasNFT = await readContract({
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'hasAnyNFT',
       args: [userAccount],
-      publicClient: client, // 👈 важно для Warpcast
+      publicClient: publicClient, // 👈 важно для Warpcast
     });
-
+    console.log(hasNFT)
     const checkStarted = await readContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'checkAndStart',
       args: [userAccount],
-      publicClient: client,
+      publicClient: publicClient,
     });
 
     const refInput = document.getElementById("refcodeInput");
