@@ -1555,7 +1555,7 @@ async function setPriorityName(name, setActiveBtn) {
     });
 
     const receipt = await waitForTransaction({
-      chainId: 84532,
+      chainId: 8453,
       hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
@@ -1699,7 +1699,7 @@ mintBtnEl.addEventListener("click", async () => {
     });
 
     const receipt = await waitForTransaction({
-      chainId: 84532,
+      chainId: 8453,
       hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
@@ -1738,7 +1738,7 @@ async function upgradeLevel() {
     });
 
     const receipt = await waitForTransaction({
-      chainId: 84532,
+      chainId: 8453,
       hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
@@ -1782,7 +1782,7 @@ async function dailyStrike() {
     });
 
     const receipt = await waitForTransaction({
-      chainId: 84532,
+      chainId: 8453,
       hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
@@ -2062,7 +2062,7 @@ mintBtnpr.addEventListener("click", async () => {
     });
 
     const receipt = await waitForTransaction({
-      chainId: 84532,
+      chainId: 8453,
       hash: tx.hash,
       confirmations: 1,
       timeout: 30000,
