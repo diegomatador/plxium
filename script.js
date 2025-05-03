@@ -13,7 +13,6 @@ let chains;
 let publicClient;
 let webSocketPublicClient;
 
-
 const { base } = WagmiCoreChains;
 const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
@@ -46,30 +45,33 @@ const baseSepolia = {
         },
 };
 
+let isWarpcast = false;
+
 async function getPlatform() {
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
 
-    chains = [baseSepolia];
-
     if (context && context.client) {
-      // Warpcast Mini App
+      // ✅ Открыто в Warpcast
       const ethProvider = sdk.wallet.ethProvider;
 
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [], // нет нужды в коннекторах
-        publicClient: ethProvider,
+        connectors: [], // нет коннекторов, используем только ethProvider напрямую
+        publicClient: ethProvider, // провайдер от Warpcast
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
+      isWarpcast = true;
+
       console.log("✅ Открыто в Warpcast Mini App");
     } else {
-      // Обычный браузер
-      const configured = configureChains(chains, [w3mProvider({ projectId })]);
-      publicClient = configured.publicClient;
-      webSocketPublicClient = configured.webSocketPublicClient;
+      // 🌐 Открыто в обычном браузере
+      const { publicClient, webSocketPublicClient } = configureChains(
+        chains,
+        [w3mProvider({ projectId })]
+      );
 
       wagmiConfig = createConfig({
         autoConnect: true,
@@ -80,10 +82,10 @@ async function getPlatform() {
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
 
-      const web3Modal = new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
+      new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
+
       console.log("🌐 Открыто в обычном браузере");
     }
-
   } catch (error) {
     console.error("Ошибка при определении платформы:", error);
   }
@@ -111,24 +113,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function checkWalletConnection() {
   try {
     const w3mCore = document.getElementById("w3mСore");
-    const account = getAccount();
 
-    if (account.isConnected) {
+    if (isWarpcast) {
+      const provider = sdk.wallet.ethProvider;
+      const accounts = await provider.request({ method: "eth_requestAccounts" });
+      userAccount = accounts[0];
+
       loader.style.display = "none";
-      w3mCore.style.display = "none";
-      userAccount = account.address;
+      if (w3mCore) w3mCore.style.display = "none";
+
+      console.log("👤 Warpcast account:", userAccount);
       checkPriorityName();
-      console.log(userAccount)
+
     } else {
-      const unwatch = watchAccount((updatedAccount) => {
-        if (updatedAccount.isConnected) {
-          unwatch();
-          loader.style.display = "none";
-          w3mCore.style.display = "none";
-          userAccount = updatedAccount.address;
-          checkPriorityName();
-        }
-      });
+      const account = getAccount();
+
+      if (account.isConnected) {
+        loader.style.display = "none";
+        if (w3mCore) w3mCore.style.display = "none";
+        userAccount = account.address;
+        checkPriorityName();
+      } else {
+        const unwatch = watchAccount((updatedAccount) => {
+          if (updatedAccount.isConnected) {
+            unwatch();
+            loader.style.display = "none";
+            if (w3mCore) w3mCore.style.display = "none";
+            userAccount = updatedAccount.address;
+            checkPriorityName();
+          }
+        });
+      }
     }
 
   } catch (err) {
@@ -136,6 +151,7 @@ async function checkWalletConnection() {
     loader.style.display = "none";
   }
 }
+
 
 function getRefCode() {
   const urlParams = new URLSearchParams(window.location.search);
