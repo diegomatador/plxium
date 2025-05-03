@@ -1237,7 +1237,7 @@ async function getPlatform() {
       const wagmiConfig = createConfig({
         autoConnect: true,
         connectors: [],
-        publicClient: publicClient,
+        publicClient: customClient,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
