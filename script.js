@@ -49,39 +49,29 @@ async function getPlatform() {
     let chains = [baseSepolia];
 
     if (context && context.client) {
-      // 👉 Используем встроенный кошелёк Warpcast
+
       const ethProvider = sdk.wallet.ethProvider;
 
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [], // Warpcast не требует коннекторов
+        connectors: [],
         publicClient: ethProvider,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
-
-      console.log("✅ Открыто в Warpcast Mini App");
     } else {
-      // 👉 Обычный браузер + Web3Modal
-      const { publicClient, webSocketPublicClient } = configureChains(
-        [baseSepolia],
-        [w3mProvider({ projectId })]
-      );
-
+        const ethereumClient = new EthereumClient(wagmiConfig, chains);
+      const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
       wagmiConfig = createConfig({
         autoConnect: true,
         connectors: w3mConnectors({ chains, projectId }),
         publicClient,
         webSocketPublicClient,
       });
-
-      ethereumClient = new EthereumClient(wagmiConfig, chains);
       console.log("🌐 Открыто в обычном браузере");
-
-      const web3Modal = new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
     }
 
-    // ✅ Теперь wagmiConfig и ethereumClient можно использовать дальше
+    const web3Modal = new Web3Modal({ projectId, cacheProvider: true, theme: "dark" }, ethereumClient);
   } catch (error) {
     console.error("Ошибка при определении платформы:", error);
   }
@@ -89,30 +79,6 @@ async function getPlatform() {
 
 let userAccount;
 
-async function showWarpcastWalletButton() {
-    const button = document.createElement('button');
-    button.innerText = 'Connect with Warpcast Wallet';
-    button.style.padding = '10px 20px';
-    button.style.fontSize = '16px';
-    button.style.position = 'absolute';
-    button.style.top = '10vh';
-    button.style.left = '50%';
-    button.style.transform = 'translateX(-50%)';
-    button.style.cursor = 'pointer';
-
-  document.body.appendChild(button);
-
-  button.addEventListener('click', async () => {
-    try {
-     await ethProvider.request({ method: 'eth_requestAccounts' });
-      const account = getAccount();
-      console.log("Подключен аккаунт:", account);
-      button.style.display = 'none';
-    } catch (error) {
-      console.error('Ошибка при добавлении фрейма:', error);
-    }
-  });
-}
 
 // ===== DOMContentLoaded =========
 document.addEventListener("DOMContentLoaded", async () => {
@@ -141,7 +107,6 @@ async function checkWalletConnection() {
       userAccount = account.address;
       checkPriorityName();
     } else {
-        await showWarpcastWalletButton();
       const unwatch = watchAccount((updatedAccount) => {
         if (updatedAccount.isConnected) {
           unwatch();
