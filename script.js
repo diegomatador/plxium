@@ -1195,11 +1195,6 @@ let contractABI2 = [
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 
-let publicClient;
-let wagmiConfig;
-let ethereumClient;
-
-let webSocketPublicClient;
 
 const { base } = WagmiCoreChains;
 const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
@@ -1213,9 +1208,14 @@ import {
 } from "https://esm.sh/viem@2.28.3";
 
 const projectId = "4b8953ae3a579f498e15afac1101b481";
-
 let chains = [base];
 let isWarpcast = false;
+
+let webSocketPublicClient;
+
+let publicClient;
+let ethereumClient;
+let ethProviderr;
 
 async function getPlatform() {
   try {
@@ -1223,45 +1223,47 @@ async function getPlatform() {
     const context = await sdk.context;
 
     if (context && context.client) {
-
-      // ✅ Открыто в Warpcast
       const ethProvider = sdk.wallet.ethProvider;
-
+      ethProviderr = ethProvider;
       publicClient = createPublicClient({
-        transport: http("https://base.drpc.org"), // можно любой другой Base RPC
+        transport: http("https://base.llamarpc.com"),
+        chain: base,
+      });
+      const customClient = createPublicClient({
+        transport: custom(ethProvider),
         chain: base,
       });
 
-      // Подключаем только провайдер к Wagmi
-      wagmiConfig = createConfig({
+      const wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [], // мы не подключаем Web3Modal
-        publicClient,
+        connectors: [],
+        publicClient: customClient,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
       isWarpcast = true;
+      console.log("✅ Warpcast Mini App");
 
-      console.log("✅ Открыто в Warpcast Mini App");
     } else {
-      // 🌐 Открыто в обычном браузере
-      const { publicClient, webSocketPublicClient } = configureChains(
+      const { publicClient: browserPublicClient, webSocketPublicClient } = configureChains(
         chains,
         [w3mProvider({ projectId })]
       );
 
-      wagmiConfig = createConfig({
+      publicClient = browserPublicClient;
+      ethProviderr = null;
+
+      const wagmiConfig = createConfig({
         autoConnect: true,
         connectors: w3mConnectors({ chains, projectId }),
-        publicClient,
+        publicClient: publicClient,
         webSocketPublicClient,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
-
       new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
 
-      console.log("🌐 Открыто в обычном браузере");
+      console.log("🌐");
     }
   } catch (error) {
     console.error("Ошибка при определении платформы:", error);
@@ -1292,9 +1294,7 @@ async function checkWalletConnection() {
     const w3mCore = document.getElementById("w3mСore");
 
     if (isWarpcast) {
-      // 🔗 Получение адреса напрямую через Warpcast
-      const provider = sdk.wallet.ethProvider;
-      const accounts = await provider.request({ method: "eth_requestAccounts" });
+      const accounts = await ethProviderr.request({ method: "eth_requestAccounts" });
       userAccount = accounts[0];
 
       loader.style.display = "none";
@@ -1304,7 +1304,7 @@ async function checkWalletConnection() {
       checkPriorityName();
 
     } else {
-      // 🌐 Обычное подключение через Wagmi
+
       const account = getAccount();
 
       if (account.isConnected) {
@@ -1442,7 +1442,7 @@ async function checkPriorityName() {
       abi: contractABI1,
       functionName: 'hasAnyNFT',
       args: [userAccount],
-      publicClient: publicClient, // 👈 важно для Warpcast
+      publicClient: publicClient,
     });
     console.log(hasNFT)
     const checkStarted = await readContract({
@@ -1502,14 +1502,16 @@ async function profileInfo() {
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getPriorityName',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
 
     const names = await readContract({
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getAllNames',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
     console.log(name)
     nameProfile.textContent = name;
@@ -1555,6 +1557,7 @@ async function setPriorityName(name, setActiveBtn) {
       abi: contractABI1,
       functionName: 'setPriorityName',
       args: [name],
+      ethProvider: ethProviderr,
     });
 
     const receipt = await waitForTransaction({
@@ -1592,7 +1595,8 @@ async function getPriorityName(bnn, funcc) {
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getPriorityName',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
     if (name && nameProfile) {
       nameProfile.textContent = name;
@@ -1641,7 +1645,8 @@ async function checkName() {
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'isNameAvailable',
-      args: [name]
+      args: [name],
+      publicClient: publicClient,
     });
     if (!available) {
       setStatus("Name is already taken.", "error");
@@ -1651,7 +1656,8 @@ async function checkName() {
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getMintPrice',
-      args: [name]
+      args: [name],
+      publicClient: publicClient,
     });
     const priceInEth = formatUnits(price, 18);
     mintBtnEl.textContent = `Mint for ${priceInEth} ETH`;
@@ -1678,7 +1684,8 @@ mintBtnEl.addEventListener("click", async () => {
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getMintPrice',
-      args: [name]
+      args: [name],
+      publicClient: publicClient,
     });
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
@@ -1694,6 +1701,7 @@ mintBtnEl.addEventListener("click", async () => {
       functionName: 'mint',
       args: [name, refcode],
       value: price.toString(),
+      ethProvider: ethProviderr,
     });
 
     const receipt = await waitForTransaction({
@@ -1732,6 +1740,7 @@ async function upgradeLevel() {
       functionName: 'upgradeLevel',
       args: [],
       value: nextLevelCost.toString(),
+      ethProvider: ethProviderr,
     });
 
     const receipt = await waitForTransaction({
@@ -1775,6 +1784,7 @@ async function dailyStrike() {
       functionName: 'dailyStrike',
       args: [],
       value: valueInWei.toString(),
+      ethProvider: ethProviderr,
     });
 
     const receipt = await waitForTransaction({
@@ -1816,20 +1826,23 @@ async function miningfunctions() {
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getDailyStrikeInfo',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
     const result1 = await readContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getNextLevelInfo',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
 
     const result = await readContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getLevelProgress',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
 
       const level = result[0];
@@ -1866,7 +1879,8 @@ async function Inviteinfo() {
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getReferralCode',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
   const fullRefLink = `https://plxium.xyz/?ref=${refCode}`;
   document.getElementById("refLink").innerText = fullRefLink;
@@ -1882,7 +1896,8 @@ async function Inviteinfo() {
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getReferralsInfo',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
     const count = parseInt(result[0]);
     const addresses = result[1];
@@ -1913,13 +1928,15 @@ async function LeaderboardInfo() {
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getPlayerRank',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: publicClient,
     });
   const topPlayers = await readContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getTopNPlayers',
-      args: [50]
+      args: [50],
+      publicClient: publicClient,
     });
 
   document.getElementById("player-rank").innerText = `${rank[1]}`;
@@ -1986,7 +2003,8 @@ async function checkNamePr() {
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'isNameAvailable',
-      args: [name]
+      args: [name],
+      publicClient: publicClient,
     });
 
     if (!available) {
@@ -1997,7 +2015,8 @@ async function checkNamePr() {
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getMintPrice',
-      args: [name]
+      args: [name],
+      publicClient: publicClient,
     });
     const priceInEth = formatUnits(price, 18);
     mintBtnpr.textContent = `Mint for ${priceInEth} ETH`;
@@ -2025,7 +2044,8 @@ mintBtnpr.addEventListener("click", async () => {
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getMintPrice',
-      args: [name]
+      args: [name],
+      publicClient: publicClient,
     });
 
     const balanceData = await fetchBalance({ address: userAccount });
@@ -2044,6 +2064,7 @@ mintBtnpr.addEventListener("click", async () => {
       functionName: 'mint',
       args: [name, refcode],
       value: price.toString(),
+      ethProvider: ethProviderr,
     });
 
     const receipt = await waitForTransaction({
