@@ -49,33 +49,39 @@ async function getPlatform() {
     let chains = [baseSepolia];
 
     if (context && context.client) {
-
+      // 👉 Используем встроенный кошелёк Warpcast
       const ethProvider = sdk.wallet.ethProvider;
 
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [],
+        connectors: [], // Warpcast не требует коннекторов
         publicClient: ethProvider,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
 
       console.log("✅ Открыто в Warpcast Mini App");
-      const account = getAccount();
-       console.log("Аккаунт:", account.address);
     } else {
-        const ethereumClient = new EthereumClient(wagmiConfig, chains);
-      const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
+      // 👉 Обычный браузер + Web3Modal
+      const { publicClient, webSocketPublicClient } = configureChains(
+        [baseSepolia],
+        [w3mProvider({ projectId })]
+      );
+
       wagmiConfig = createConfig({
         autoConnect: true,
         connectors: w3mConnectors({ chains, projectId }),
         publicClient,
         webSocketPublicClient,
       });
+
+      ethereumClient = new EthereumClient(wagmiConfig, chains);
       console.log("🌐 Открыто в обычном браузере");
+
+      const web3Modal = new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
     }
 
-    const web3Modal = new Web3Modal({ projectId, cacheProvider: true, theme: "dark" }, ethereumClient);
+    // ✅ Теперь wagmiConfig и ethereumClient можно использовать дальше
   } catch (error) {
     console.error("Ошибка при определении платформы:", error);
   }
