@@ -766,6 +766,7 @@ let contractABI1 = [
     "type": "function"
   }
 ];
+
 let contractAddress2 = "0x9Ea305E5a8BfC2f4c49809f4F6e3C2eFb28fB5cF";
 let contractABI2 = [
   {
@@ -1189,6 +1190,8 @@ let contractABI2 = [
     "type": "function"
   }
 ];
+
+
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 
@@ -1199,36 +1202,12 @@ let publicClient;
 let webSocketPublicClient;
 
 const { base } = WagmiCoreChains;
-const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
+const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
-const baseSepolia = {
-        id: 84532,
-        name: 'Base Sepolia',
-        network: 'base-sepolia',
-        nativeCurrency: {
-          name: 'Ethereum',
-          symbol: 'ETH',
-          decimals: 18,
-        },
-        rpcUrls: {
-          default: {
-            http: ['https://base-sepolia.drpc.org'],
-          },
-          public: {
-            http: ['https://base-sepolia.drpc.org'],
-          },
-        },
-        blockExplorers: {
-          default: {
-            name: 'Basescan',
-            url: 'https://base-sepolia.blockscout.com',
-          },
-        },
-};
 let chains = [base];
 let isWarpcast = false;
 
@@ -1418,64 +1397,6 @@ function setupSectionButtons() {
     }
   });
 }
-
-
-async function switchToBase() {
-  try {
-    const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-    console.log('Текущая сеть:', currentChainId);
-
-    const baseSepoliaChainIdHex = '0x14A74'; // 84532 в 16-ричной системе
-
-    if (currentChainId !== baseSepoliaChainIdHex) {
-      try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: baseSepoliaChainIdHex }]
-        });
-        console.log('Сеть успешно переключена на Base Sepolia!');
-      } catch (switchError) {
-        console.error('Ошибка переключения:', switchError);
-
-        // Если ошибка что сеть не найдена
-        if (switchError.code === 4902) {
-          try {
-            // Добавляем сеть
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId: baseSepoliaChainIdHex,
-                chainName: 'Base Sepolia',
-                nativeCurrency: {
-                  name: 'Ethereum',
-                  symbol: 'ETH',
-                  decimals: 18
-                },
-                rpcUrls: ['https://sepolia.base.org'],
-                blockExplorerUrls: ['https://base-sepolia.blockscout.com']
-              }]
-            });
-            console.log('Сеть Base Sepolia добавлена!');
-
-            // После добавления пробуем снова переключиться
-            await window.ethereum.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: baseSepoliaChainIdHex }]
-            });
-            console.log('Сеть успешно переключена после добавления!');
-          } catch (addError) {
-            console.error('Ошибка при добавлении сети:', addError);
-          }
-        }
-      }
-    } else {
-      console.log('Вы уже подключены к Base Sepolia.');
-    }
-  } catch (error) {
-    console.error('Общая ошибка при работе с сетями:', error);
-  }
-}
-
 
 function shortenAddress(addr) {
   return addr.slice(0, 6) + "..." + addr.slice(-4);
