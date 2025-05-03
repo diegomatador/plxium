@@ -1216,7 +1216,7 @@ let publicClient;
 let ethereumClient;
 let ethProviderr;
 let userAccount;
-
+let web3Modal;
 
 async function getPlatform() {
   try {
@@ -1259,7 +1259,7 @@ async function getPlatform() {
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
-      new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
+      web3Modal = new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
 
       console.log("🌐");
     }
@@ -1440,7 +1440,7 @@ async function checkPriorityName() {
       args: [userAccount],
       publicClient: publicClient,
     });
-    
+
     const checkStarted = await readContract({
       address: contractAddress2,
       abi: contractABI2,
@@ -1509,10 +1509,8 @@ async function profileInfo() {
       args: [userAccount],
       publicClient: publicClient,
     });
-    console.log(name)
+    
     nameProfile.textContent = name;
-
-
     const namesContainer = document.getElementById('namesContainer');
     namesContainer.innerHTML = '';
 
