@@ -12,7 +12,7 @@ let ethereumClient;
 let chains;
 let publicClient;
 let webSocketPublicClient;
-let userAccount;
+
 
 const { base } = WagmiCoreChains;
 const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
