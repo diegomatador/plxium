@@ -1205,7 +1205,8 @@ const { base } = WagmiCoreChains;
 const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
-import * as viem from "https://unpkg.com/viem@2.28.3/_cjs/index.js";
+import * as viem from "https://esm.sh/viem@2.28.3";
+
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
 let chains = [base];
