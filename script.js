@@ -1205,7 +1205,11 @@ const { base } = WagmiCoreChains;
 const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
-import * as viem from "https://esm.sh/viem@2.28.3";
+
+import {
+  createPublicClient,
+  custom,
+} from "https://esm.sh/viem@2.28.3";
 
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
@@ -1218,14 +1222,14 @@ async function getPlatform() {
     const context = await sdk.context;
 
     if (context && context.client) {
-        
+
       // ✅ Открыто в Warpcast
       const ethProvider = sdk.wallet.ethProvider;
 
       const publicClient = createPublicClient({
-        transport: http(ethProvider),
-        chain: base,
-      });
+      transport: custom(ethProvider),
+      chain: base,
+    });
 
       wagmiConfig = createConfig({
         autoConnect: true,
