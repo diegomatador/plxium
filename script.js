@@ -1217,13 +1217,19 @@ async function getPlatform() {
     const context = await sdk.context;
 
     if (context && context.client) {
+        import { createPublicClient, http } from "https://unpkg.com/viem@2.28.3/_cjs/index.js";
       // ✅ Открыто в Warpcast
       const ethProvider = sdk.wallet.ethProvider;
+
+      const publicClient = createPublicClient({
+        transport: http(ethProvider),
+        chain: base,
+      });
 
       wagmiConfig = createConfig({
         autoConnect: true,
         connectors: [],
-        publicClient: ethProvider,
+        publicClient,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
