@@ -1228,7 +1228,7 @@ async function getPlatform() {
       const ethProvider = sdk.wallet.ethProvider;
 
       publicClient = createPublicClient({
-        transport: http("https://base.llamarpc.com"), // можно любой другой Base RPC
+        transport: http("https://base.drpc.org"), // можно любой другой Base RPC
         chain: base,
       });
 
