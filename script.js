@@ -1229,7 +1229,7 @@ const baseSepolia = {
           },
         },
 };
-let chains = [baseSepolia];
+let chains = [base];
 let isWarpcast = false;
 
 async function getPlatform() {
