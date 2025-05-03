@@ -1229,15 +1229,11 @@ async function getPlatform() {
         transport: http("https://base.drpc.org"),
         chain: base,
       });
-      const customClient = createPublicClient({
-        transport: custom(ethProvider),
-        chain: base,
-      });
 
       const wagmiConfig = createConfig({
         autoConnect: true,
         connectors: [],
-        publicClient: customClient,
+        publicClient: publicClient,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
