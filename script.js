@@ -1433,44 +1433,54 @@ document.getElementById("mintMoreToggle").addEventListener("click", () => {
 });
 
 async function checkPriorityName() {
-
   try {
+    // Выбираем правильный client для чтения
+    const client = isWarpcast
+      ? createPublicClient({
+          transport: http('https://base.llamarpc.com'), // или другой RPC, не sdk.wallet.ethProvider
+          chain: base,
+        })
+      : publicClient;
+
     const hasNFT = await readContract({
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'hasAnyNFT',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: client, // 👈 важно для Warpcast
     });
 
     const checkStarted = await readContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'checkAndStart',
-      args: [userAccount]
+      args: [userAccount],
+      publicClient: client,
     });
+
     const refInput = document.getElementById("refcodeInput");
+
     if (!hasNFT) {
       document.getElementById("mintSection").style.display = "flex";
       if (checkStarted) {
-          refInput.style.display = "none";
+        refInput.style.display = "none";
+      } else {
+        const refCode = getRefCode();
+        if (refCode) {
+          refInput.value = refCode;
         }
-        else {
-            const refCode = getRefCode();
-            if (refCode) {
-              refInput.value = refCode;
-            }
-        }
+      }
       return;
     }
 
     document.body.classList.add('site-active');
     document.getElementById("site").style.display = "flex";
     await getPriorityName('mining', miningfunctions);
-
   } catch (err) {
     console.error("Error getting priority name:", err);
   }
 }
+
 
 async function profileInfo() {
   const nameProfile = document.getElementById('username');
