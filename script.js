@@ -1208,14 +1208,15 @@ import {
 } from "https://esm.sh/viem@2.28.3";
 
 const projectId = "4b8953ae3a579f498e15afac1101b481";
+
 let chains = [base];
 let isWarpcast = false;
-
 let webSocketPublicClient;
-
 let publicClient;
 let ethereumClient;
 let ethProviderr;
+let userAccount;
+
 
 async function getPlatform() {
   try {
@@ -1225,6 +1226,7 @@ async function getPlatform() {
     if (context && context.client) {
       const ethProvider = sdk.wallet.ethProvider;
       ethProviderr = ethProvider;
+
       publicClient = createPublicClient({
         transport: http("https://base.drpc.org"),
         chain: base,
@@ -1266,7 +1268,7 @@ async function getPlatform() {
   }
 }
 
-let userAccount;
+
 
 
 // ===== DOMContentLoaded =========
@@ -1295,8 +1297,6 @@ async function checkWalletConnection() {
 
       loader.style.display = "none";
       if (w3mCore) w3mCore.style.display = "none";
-
-      console.log("👤 Warpcast account:", userAccount);
       checkPriorityName();
 
     } else {
@@ -1440,7 +1440,7 @@ async function checkPriorityName() {
       args: [userAccount],
       publicClient: publicClient,
     });
-    console.log(hasNFT)
+    
     const checkStarted = await readContract({
       address: contractAddress2,
       abi: contractABI2,
