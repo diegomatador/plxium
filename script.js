@@ -9,7 +9,7 @@ import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 
 let wagmiConfig;
 let ethereumClient;
-let chains;
+
 let publicClient;
 let webSocketPublicClient;
 
@@ -44,7 +44,7 @@ const baseSepolia = {
           },
         },
 };
-
+let chains = [baseSepolia];
 let isWarpcast = false;
 
 async function getPlatform() {
@@ -58,8 +58,8 @@ async function getPlatform() {
 
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [], // нет коннекторов, используем только ethProvider напрямую
-        publicClient: ethProvider, // провайдер от Warpcast
+        connectors: [],
+        publicClient: ethProvider,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
@@ -115,6 +115,7 @@ async function checkWalletConnection() {
     const w3mCore = document.getElementById("w3mСore");
 
     if (isWarpcast) {
+      // 🔗 Получение адреса напрямую через Warpcast
       const provider = sdk.wallet.ethProvider;
       const accounts = await provider.request({ method: "eth_requestAccounts" });
       userAccount = accounts[0];
@@ -126,6 +127,7 @@ async function checkWalletConnection() {
       checkPriorityName();
 
     } else {
+      // 🌐 Обычное подключение через Wagmi
       const account = getAccount();
 
       if (account.isConnected) {
@@ -151,7 +153,6 @@ async function checkWalletConnection() {
     loader.style.display = "none";
   }
 }
-
 
 function getRefCode() {
   const urlParams = new URLSearchParams(window.location.search);
