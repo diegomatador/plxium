@@ -38,29 +38,40 @@ const baseSepolia = {
           },
         },
 };
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
 async function getPlatform() {
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
+
+    let ethereumClient;
     let wagmiConfig;
-    let chains;
+    let chains = [baseSepolia];
 
     if (context && context.client) {
-        const accounts = await ethereumClient.connect();
-        console.log("Подключенные аккаунты:", accounts);
-        ethProvider = sdk.wallet.ethProvider;
-      console.log("✅ Открыто в Warpcast Mini App");
-    } else {
-      const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
 
+      const ethProvider = sdk.wallet.ethProvider;
+
+      wagmiConfig = createConfig({
+        autoConnect: true,
+        connectors: [],
+        publicClient: ethProvider,
+      });
+
+      ethereumClient = new EthereumClient(wagmiConfig, chains);
+
+      console.log("✅ Открыто в Warpcast Mini App");
+      const account = getAccount();
+       console.log("Аккаунт:", account.address);
+    } else {
+        const ethereumClient = new EthereumClient(wagmiConfig, chains);
+      const { chains, publicClient, webSocketPublicClient } = configureChains([baseSepolia], [w3mProvider({ projectId })]);
       wagmiConfig = createConfig({
         autoConnect: true,
         connectors: w3mConnectors({ chains, projectId }),
         publicClient,
         webSocketPublicClient,
       });
-
       console.log("🌐 Открыто в обычном браузере");
     }
 
