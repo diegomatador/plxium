@@ -7,6 +7,13 @@ let contractABI2 = [{"inputs":[{"internalType":"address","name":"_mintContractAd
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 
+let wagmiConfig;
+let ethereumClient;
+let chains;
+let publicClient;
+let webSocketPublicClient;
+let userAccount;
+
 const { base } = WagmiCoreChains;
 const { connect, watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 
@@ -44,28 +51,25 @@ async function getPlatform() {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
 
-    let ethereumClient;
-    let wagmiConfig;
-    let chains = [baseSepolia];
+    chains = [baseSepolia];
 
     if (context && context.client) {
+      // Warpcast Mini App
       const ethProvider = sdk.wallet.ethProvider;
 
       wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [],
+        connectors: [], // нет нужды в коннекторах
         publicClient: ethProvider,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
-
       console.log("✅ Открыто в Warpcast Mini App");
     } else {
-
-      const { publicClient, webSocketPublicClient } = configureChains(
-        [baseSepolia],
-        [w3mProvider({ projectId })]
-      );
+      // Обычный браузер
+      const configured = configureChains(chains, [w3mProvider({ projectId })]);
+      publicClient = configured.publicClient;
+      webSocketPublicClient = configured.webSocketPublicClient;
 
       wagmiConfig = createConfig({
         autoConnect: true,
@@ -75,12 +79,11 @@ async function getPlatform() {
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
-      console.log("🌐 Открыто в обычном браузере");
 
       const web3Modal = new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
+      console.log("🌐 Открыто в обычном браузере");
     }
 
-    // ✅ Теперь wagmiConfig и ethereumClient можно использовать дальше
   } catch (error) {
     console.error("Ошибка при определении платформы:", error);
   }
@@ -115,6 +118,7 @@ async function checkWalletConnection() {
       w3mCore.style.display = "none";
       userAccount = account.address;
       checkPriorityName();
+      console.log(userAccount)
     } else {
       const unwatch = watchAccount((updatedAccount) => {
         if (updatedAccount.isConnected) {
