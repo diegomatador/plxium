@@ -6,9 +6,9 @@
   "frame": {
     "version": "1",
     "name": "PLXium",
-    "iconUrl": "https://plxium.vercel.app/logo.webp",
+    "iconUrl": "https://plxium.vercel.app/images/logo.webp",
     "homeUrl": "https://plxium.vercel.app",
-    "splashImageUrl": "https://plxium.vercel.app/logo.webp",
+    "splashImageUrl": "https://plxium.vercel.app/images/logo.webp",
     "splashBackgroundColor": "#000000",
     "primaryCategory": "games",
     "tags": [
@@ -18,6 +18,6 @@
       "game"
     ],
     "ogTitle": "PLXium",
-    "ogImageUrl": "https://plxium.vercel.app/logo.webp"
+    "ogImageUrl": "https://plxium.vercel.appp/images/logo.webp"
   }
 }
