@@ -1421,7 +1421,7 @@ const profileImg = document.getElementById("profileImg");
 profileImg.addEventListener("click", () => {
   if (isWarpcast){
     const context = sdk.context;
-    await sdk.actions.viewProfile({context.client.clientFid})
+    sdk.actions.viewProfile({context.client.clientFid})
   }
   else {
     web3Modal.openModal();
