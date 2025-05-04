@@ -1301,7 +1301,7 @@ async function checkWalletConnection() {
       checkPriorityName();
       const context = await sdk.context;
       if (!context.client.added){
-      await sdk.actions.addFrame()
+        await sdk.actions.addFrame()
       }
     } else {
 
@@ -1420,8 +1420,8 @@ const profileImg = document.getElementById("profileImg");
 
 profileImg.addEventListener("click", () => {
   if (isWarpcast){
-    const context = sdk.context;
-    sdk.actions.viewProfile({ fid: context.client.clientFid })
+    return
+    })
   }
   else {
     web3Modal.openModal();
