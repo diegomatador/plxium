@@ -1420,7 +1420,7 @@ const profileImg = document.getElementById("profileImg");
 
 profileImg.addEventListener("click", () => {
   if (isWarpcast){
-    const context = await sdk.context;
+    const context = sdk.context;
     await sdk.actions.viewProfile({context.client.clientFid})
   }
   else {
