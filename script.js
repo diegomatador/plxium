@@ -1191,14 +1191,10 @@ let contractABI2 = [
   }
 ];
 
-
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
-
-
 const { base } = WagmiCoreChains;
 const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
-
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 
 import {
@@ -1218,12 +1214,14 @@ let ethereumClient;
 let ethProviderr;
 let userAccount;
 let web3Modal;
+let walletClient;
+
 
 async function getPlatform() {
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
-    console.log(context)
+
     if (context && context.client) {
       const ethProvider = sdk.wallet.ethProvider;
       ethProviderr = ethProvider;
@@ -1241,8 +1239,13 @@ async function getPlatform() {
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
       isWarpcast = true;
-      console.log("✅ Warpcast Mini App");
+      console.log(" Warpcast Mini App");
 
+      walletClient = createWalletClient({
+        chain: base,
+        transport: custom(ethProviderr),
+        account: userAccount,
+      });
     } else {
       const { publicClient: browserPublicClient, webSocketPublicClient } = configureChains(
         chains,
@@ -1296,7 +1299,10 @@ async function checkWalletConnection() {
       loader.style.display = "none";
       if (w3mCore) w3mCore.style.display = "none";
       checkPriorityName();
-
+      const context = await sdk.context;
+      if (!context.client.added){
+      await sdk.actions.addFrame()
+      }
     } else {
 
       const account = getAccount();
@@ -1414,8 +1420,8 @@ const profileImg = document.getElementById("profileImg");
 
 profileImg.addEventListener("click", () => {
   if (isWarpcast){
-    console.log("⚠️ Disabled in Warpcast");
-    return
+    const context = await sdk.context;
+    await sdk.actions.viewProfile({context.client.clientFid})
   }
   else {
     web3Modal.openModal();
@@ -1476,7 +1482,6 @@ async function checkPriorityName() {
   }
 }
 
-
 async function profileInfo() {
   const nameProfile = document.getElementById('username');
   const Profilelogo = document.getElementById('profilelogo');
@@ -1488,9 +1493,9 @@ async function profileInfo() {
       const addr = userAccount;
       navigator.clipboard.writeText(addr).then(() => {
         const icon = document.getElementById("copyAddr");
-        icon.className = "fas fa-check"; // показываем галочку
+        icon.className = "fas fa-check";
         setTimeout(() => {
-          icon.className = "fas fa-copy"; // возвращаем иконку копирования
+          icon.className = "fas fa-copy";
         }, 500);
       }).catch(err => {
         console.error("Copy failed:", err);
@@ -1550,17 +1555,29 @@ async function setPriorityName(name, setActiveBtn) {
     setActiveBtn.textContent = 'Waiting...';
     setActiveBtn.disabled = true;
 
-    const tx = await writeContract({
-      address: contractAddress1,
-      abi: contractABI1,
-      functionName: 'setPriorityName',
-      args: [name],
-      ethProvider: ethProviderr,
-    });
+     let txHash;
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress1,
+        abi: contractABI1,
+        functionName: "setPriorityName",
+        args: [name],
+      });
+    } else {
+      const tx = await writeContract({
+          address: contractAddress1,
+          abi: contractABI1,
+          functionName: 'setPriorityName',
+          args: [name],
+        });
+      txHash = tx.hash;
+    }
+
 
     const receipt = await waitForTransaction({
       chainId: 8453,
-      hash: tx.hash,
+      hash: txHash,
       confirmations: 1,
       timeout: 30000,
     });
@@ -1683,6 +1700,7 @@ mintBtnEl.addEventListener("click", async () => {
       abi: contractABI1,
       functionName: 'getMintPrice',
       args: [name],
+      publicClient: publicClient,
     });
 
     const balanceData = await fetchBalance({ address: userAccount });
@@ -1691,20 +1709,12 @@ mintBtnEl.addEventListener("click", async () => {
       setStatus("Not enough balance for mint!");
       return;
     }
-
     mintBtnEl.textContent = `Waiting for confirmation...`;
     mintBtnEl.disabled = true;
 
     let txHash;
 
     if (isWarpcast) {
-      // Используем viem + custom provider
-      const walletClient = createWalletClient({
-        chain: base,
-        transport: custom(ethProviderr),
-        account: userAccount,
-      });
-
       txHash = await walletClient.writeContract({
         address: contractAddress1,
         abi: contractABI1,
@@ -1713,15 +1723,13 @@ mintBtnEl.addEventListener("click", async () => {
         value: price,
       });
     } else {
-      // Используем wagmi
       const tx = await writeContract({
         address: contractAddress1,
         abi: contractABI1,
         functionName: "mint",
         args: [name, refcode],
-        value: price.toString(), // wagmi требует string
+        value: price.toString(),
       });
-
       txHash = tx.hash;
     }
 
@@ -1732,19 +1740,12 @@ mintBtnEl.addEventListener("click", async () => {
       timeout: 30000,
     });
 
-    if (receipt.status === "success") {
-      mintBtnEl.textContent = `Mint successful!`;
-      setTimeout(() => {
-        location.reload();
-      }, 500);
-    } else {
-      setStatus("Transaction failed.", "error");
-    }
-
+    if (receipt.status === 'success') {
+        mintBtnEl.textContent = `Mint successful!`;
+        setTimeout(() => {location.reload();}, 500);
+        }
   } catch (err) {
     console.error("Transaction failed:", err);
-    setStatus("Transaction error", "error");
-    mintBtnEl.disabled = false;
   }
 });
 
@@ -1755,25 +1756,45 @@ async function upgradeLevel() {
   try {
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
+
     if (nextLevelCost > balance) {
+      const originalText = powerup.textContent;
       powerup.textContent = "Not enough balance for upgrade!";
+      powerup.disabled = true;
+      setTimeout(() => {
+        powerup.textContent = originalText;
+        powerup.disabled = false;
+      }, 1000);
       return;
     }
+
     powerup.disabled = true;
     powerup.textContent = "Waiting for confirmation...";
 
-    const tx = await writeContract({
-      address: contractAddress2,
-      abi: contractABI2,
-      functionName: 'upgradeLevel',
-      args: [],
-      value: nextLevelCost.toString(),
-      ethProvider: ethProviderr,
-    });
+    let txHash;
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: "upgradeLevel",
+        args: [],
+        value: nextLevelCost,
+      });
+    } else {
+      const tx = await writeContract({
+          address: contractAddress2,
+          abi: contractABI2,
+          functionName: 'upgradeLevel',
+          args: [],
+          value: nextLevelCost.toString(),
+        });
+      txHash = tx.hash;
+    }
 
     const receipt = await waitForTransaction({
       chainId: 8453,
-      hash: tx.hash,
+      hash: txHash,
       confirmations: 1,
       timeout: 30000,
     });
@@ -1799,25 +1820,47 @@ async function dailyStrike() {
     const valueInWei = BigInt("100000000000000");
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
+
     if (balance < valueInWei) {
-      collectr.textContent = "Not enough balance for collect rewards!";
+      const originalText = collectr.textContent;
+      powerup.textContent = "Not enough balance for collect rewards!";
+      powerup.disabled = true;
+      setTimeout(() => {
+        powerup.textContent = originalText;
+        powerup.disabled = false;
+      }, 2000);
+
       return;
     }
 
     collectr.disabled = true;
     collectr.textContent = "Waiting for confirmation...";
-    const tx = await writeContract({
-      address: contractAddress2,
-      abi: contractABI2,
-      functionName: 'dailyStrike',
-      args: [],
-      value: valueInWei.toString(),
-      ethProvider: ethProviderr,
-    });
+
+    let txHash;
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: "dailyStrike",
+        args: [],
+        value: valueInWei,
+      });
+    } else {
+      const tx = await writeContract({
+          address: contractAddress2,
+          abi: contractABI2,
+          functionName: 'dailyStrike',
+          args: [],
+          value: valueInWei.toString(),
+        });
+      txHash = tx.hash;
+    }
+
 
     const receipt = await waitForTransaction({
       chainId: 8453,
-      hash: tx.hash,
+      hash: txHash,
       confirmations: 1,
       timeout: 30000,
     });
@@ -2086,18 +2129,30 @@ mintBtnpr.addEventListener("click", async () => {
     mintBtnpr.textContent = `Waiting for confirmation...`;
     mintBtnpr.disabled = false;
 
-    const tx = await writeContract({
-      address: contractAddress1,
-      abi: contractABI1,
-      functionName: 'mint',
-      args: [name, refcode],
-      value: price.toString(),
-      ethProvider: ethProviderr,
-    });
+    let txHash
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress1,
+        abi: contractABI1,
+        functionName: "mint",
+        args: [name, refcode],
+        value: price,
+      });
+    } else {
+      const tx = await writeContract({
+          address: contractAddress1,
+          abi: contractABI1,
+          functionName: 'mint',
+          args: [name, refcode],
+          value: price.toString(),
+        });
+      txHash = tx.hash;
+    }
 
     const receipt = await waitForTransaction({
       chainId: 8453,
-      hash: tx.hash,
+      hash: txHash,
       confirmations: 1,
       timeout: 30000,
     });
