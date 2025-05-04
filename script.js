@@ -1413,7 +1413,13 @@ function shortenAddress(addr) {
 const profileImg = document.getElementById("profileImg");
 
 profileImg.addEventListener("click", () => {
-  web3Modal.openModal();
+  if (isWarpcast){
+    console.log("⚠️ Disabled in Warpcast");
+    return
+  }
+  else {
+    web3Modal.openModal();
+  }
 });
 
 
