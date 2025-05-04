@@ -1419,13 +1419,8 @@ function shortenAddress(addr) {
 const profileImg = document.getElementById("profileImg");
 
 profileImg.addEventListener("click", () => {
-  if (isWarpcast){
-    return
-    }
-  }
-  else {
-    web3Modal.openModal();
-  }
+  if (isWarpcast){ return }
+  else { web3Modal.openModal(); }
 });
 
 
