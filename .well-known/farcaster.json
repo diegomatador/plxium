@@ -10,13 +10,6 @@
     "homeUrl": "https://plxium.vercel.app",
     "splashImageUrl": "https://plxium.vercel.app/logo.webp",
     "splashBackgroundColor": "#000000",
-    "subtitle": "PLxium mining game!",
-    "description": "Mine, upgrade and earn rewards!",
-    "screenshotUrls": [
-      "https://plxium.vercel.app/logo.webp",
-      "https://plxium.vercel.app/logo.webp",
-      "https://plxium.vercel.app/logo.webp"
-    ],
     "primaryCategory": "games",
     "tags": [
       "NFT",
@@ -24,10 +17,7 @@
       "crypto",
       "game"
     ],
-    "heroImageUrl": "https://plxium.vercel.app/logo.webp",
-    "tagline": "Upgrade your names!",
     "ogTitle": "PLXium",
-    "ogDescription": "Upgrade your mining skills, and earn rewards.",
     "ogImageUrl": "https://plxium.vercel.app/logo.webp"
   }
 }
