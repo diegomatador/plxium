@@ -1223,7 +1223,7 @@ async function getPlatform() {
   try {
     await sdk.actions.ready({ disableNativeGestures: true });
     const context = await sdk.context;
-
+    console.log(context)
     if (context && context.client) {
       const ethProvider = sdk.wallet.ethProvider;
       ethProviderr = ethProvider;
