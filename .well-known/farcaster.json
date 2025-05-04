@@ -6,17 +6,12 @@
   "frame": {
     "version": "1",
     "name": "PLXium",
-    "iconUrl": "https://plxium.vercel.app/images/logo1024.png",
+    "iconUrl": "https://plxium.vercel.app/images/logo.png",
     "homeUrl": "https://plxium.vercel.app",
     "splashImageUrl": "https://plxium.vercel.app/images/logo.png",
     "splashBackgroundColor": "#202124",
     "primaryCategory": "games",
-    "tags": [
-      "NFT",
-      "mining",
-      "crypto",
-      "game"
-    ],
+    "buttonTitle": "Let's Go",
     "ogTitle": "PLXium",
     "ogImageUrl": "https://plxium.vercel.app/images/oglogo.png"
   }
