@@ -1268,9 +1268,6 @@ async function getPlatform() {
   }
 }
 
-
-
-
 // ===== DOMContentLoaded =========
 document.addEventListener("DOMContentLoaded", async () => {
   const loader = document.getElementById("loader");
@@ -1509,7 +1506,7 @@ async function profileInfo() {
       args: [userAccount],
       publicClient: publicClient,
     });
-    
+
     nameProfile.textContent = name;
     const namesContainer = document.getElementById('namesContainer');
     namesContainer.innerHTML = '';
@@ -1679,38 +1676,68 @@ mintBtnEl.addEventListener("click", async () => {
       abi: contractABI1,
       functionName: 'getMintPrice',
       args: [name],
-      publicClient: publicClient,
     });
+
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
     if (balance < BigInt(price)) {
       setStatus("Not enough balance for mint!");
       return;
     }
+
     mintBtnEl.textContent = `Waiting for confirmation...`;
     mintBtnEl.disabled = true;
-    const tx = await writeContract({
-      address: contractAddress1,
-      abi: contractABI1,
-      functionName: 'mint',
-      args: [name, refcode],
-      value: price.toString(),
-      ethProvider: ethProviderr,
-    });
+
+    let txHash;
+
+    if (isWarpcast) {
+      // Используем viem + custom provider
+      const walletClient = createWalletClient({
+        chain: base,
+        transport: custom(ethProviderr),
+        account: userAccount,
+      });
+
+      txHash = await walletClient.writeContract({
+        address: contractAddress1,
+        abi: contractABI1,
+        functionName: "mint",
+        args: [name, refcode],
+        value: price,
+      });
+    } else {
+      // Используем wagmi
+      const tx = await writeContract({
+        address: contractAddress1,
+        abi: contractABI1,
+        functionName: "mint",
+        args: [name, refcode],
+        value: price.toString(), // wagmi требует string
+      });
+
+      txHash = tx.hash;
+    }
 
     const receipt = await waitForTransaction({
       chainId: 8453,
-      hash: tx.hash,
+      hash: txHash,
       confirmations: 1,
       timeout: 30000,
     });
 
-    if (receipt.status === 'success') {
-        mintBtnEl.textContent = `Mint successful!`;
-        setTimeout(() => {location.reload();}, 500);
-        }
+    if (receipt.status === "success") {
+      mintBtnEl.textContent = `Mint successful!`;
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    } else {
+      setStatus("Transaction failed.", "error");
+    }
+
   } catch (err) {
     console.error("Transaction failed:", err);
+    setStatus("Transaction error", "error");
+    mintBtnEl.disabled = false;
   }
 });
 
