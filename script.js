@@ -1202,6 +1202,7 @@ const { watchAccount, waitForTransaction, writeContract, configureChains, create
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 
 import {
+  createWalletClient,
   createPublicClient,
   custom,
   http,
