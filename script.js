@@ -850,7 +850,7 @@ async function Inviteinfo() {
     });
     const count = parseInt(result[0]);
     const addresses = result[1];
-    const balances = result[2];
+    const balances = parseInt(result[2]);
     const names = result[3];
 
     const list = document.getElementById("referralsList");
