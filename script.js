@@ -1074,14 +1074,14 @@ async function mintBalanceRewards(mintButton) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
-        functionName: "mintBalanceRewards",
+        functionName: "mintAllBalanceRewards",
       });
     } else {
       await switchToBase();
       const tx = await writeContract({
         address: contractAddress2,
         abi: contractABI2,
-        functionName: 'mintBalanceRewards',
+        functionName: 'mintAllBalanceRewards',
       });
       txHash = tx.hash;
     }
