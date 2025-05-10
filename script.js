@@ -1,1195 +1,4 @@
-let contractAddress1 = "0xf0bf7944002a419B54D8664A075104d49c613B25";
-let contractABI1 = [
-  {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "ERC721IncorrectOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "operator",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ERC721InsufficientApproval",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "approver",
-        "type": "address"
-      }
-    ],
-    "name": "ERC721InvalidApprover",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "operator",
-        "type": "address"
-      }
-    ],
-    "name": "ERC721InvalidOperator",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "ERC721InvalidOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      }
-    ],
-    "name": "ERC721InvalidReceiver",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      }
-    ],
-    "name": "ERC721InvalidSender",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ERC721NonexistentToken",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnableInvalidOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "OwnableUnauthorizedAccount",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "approved",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "Approval",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "operator",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "approved",
-        "type": "bool"
-      }
-    ],
-    "name": "ApprovalForAll",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "Minted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "Transfer",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "approve",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "balanceOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "burn",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "owners",
-        "type": "address[]"
-      }
-    ],
-    "name": "getAddressesAndNames",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "owner",
-            "type": "address"
-          },
-          {
-            "internalType": "string[]",
-            "name": "names",
-            "type": "string[]"
-          }
-        ],
-        "internalType": "struct PLXiUMNFT.AddressNames[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "getAllNames",
-    "outputs": [
-      {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getApproved",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "getMintPrice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      }
-    ],
-    "name": "getPriorityName",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "image",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "hasAnyNFT",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "operator",
-        "type": "address"
-      }
-    ],
-    "name": "isApprovedForAll",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "isNameAvailable",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "referralCode",
-        "type": "string"
-      }
-    ],
-    "name": "mint",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "name",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ownerOf",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "safeTransferFrom",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "safeTransferFrom",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "operator",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "approved",
-        "type": "bool"
-      }
-    ],
-    "name": "setApprovalForAll",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_gameContractAddress",
-        "type": "address"
-      }
-    ],
-    "name": "setGameContractAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "setPriorityName",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes4",
-        "name": "interfaceId",
-        "type": "bytes4"
-      }
-    ],
-    "name": "supportsInterface",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "symbol",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "tokenURI",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalMinted",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "threeLetter",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "fourLetter",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "fiveLetter",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "moreThanFive",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "total",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "transferFrom",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "withdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
-];
-
-let contractAddress2 = "0x9Ea305E5a8BfC2f4c49809f4F6e3C2eFb28fB5cF";
-let contractABI2 = [
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_mintContractAddress",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnableInvalidOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "OwnableUnauthorizedAccount",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "playerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "checkAndStart",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "dailyStrike",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "playerAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "referralCode",
-        "type": "string"
-      }
-    ],
-    "name": "enterGame",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "level",
-        "type": "uint256"
-      }
-    ],
-    "name": "getBalanceThresholdForLevel",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "playerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getDailyStrikeInfo",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "startIndex",
-        "type": "uint256"
-      }
-    ],
-    "name": "getInfo",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "playerAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "balance",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct PLXiUM.PlayerBalanceInfo[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "playerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getLevelProgress",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "level",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "rewardPerHour",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "percentToNextLevel",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "playerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getNextLevelInfo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "cost",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "hourlyReward",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "player",
-        "type": "address"
-      }
-    ],
-    "name": "getPlayerPriorityName",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "playerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getPlayerRank",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "rank",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "playerBalance",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "playerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getReferralCode",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      }
-    ],
-    "name": "getReferralsInfo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "topN",
-        "type": "uint256"
-      }
-    ],
-    "name": "getTopNPlayers",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "playerAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "level",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "balance",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct PLXiUM.PlayerInfo[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_mintContractAddress",
-        "type": "address"
-      }
-    ],
-    "name": "setMintContractAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "upgradeLevel",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "withdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
-];
+import { contractAddress1, contractAddress2, contractABI1, contractABI2 } from './contracts.js';
 
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
@@ -1206,7 +15,8 @@ import {
 
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
-let chains = [base];
+const chainid = 84532
+
 let isWarpcast = false;
 let webSocketPublicClient;
 let publicClient;
@@ -1216,6 +26,70 @@ let userAccount;
 let web3Modal;
 let walletClient;
 
+
+const baseSepolia = {
+        id: chainid,
+        name: 'Base Sepolia',
+        network: 'base-sepolia',
+        nativeCurrency: {
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        rpcUrls: {
+          default: {
+            http: ['https://sepolia.base.org'],
+          },
+          public: {
+            http: ['https://sepolia.base.org'],
+          },
+        },
+        blockExplorers: {
+          default: {
+            name: 'Basescan',
+            url: 'https://base-sepolia.blockscout.com',
+          },
+        },
+};
+
+
+async function switchToBase() {
+  const chainIdHex = "0x14A34"; // 84532 в hex
+
+  try {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: chainIdHex }],
+    });
+    console.log("✅ Сеть переключена на Base Sepolia");
+  } catch (switchError) {
+    if (switchError.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [{
+            chainId: chainIdHex,
+            chainName: "Base Sepolia",
+            rpcUrls: ["https://sepolia.base.org"],
+            nativeCurrency: {
+              name: "Ethereum",
+              symbol: "ETH",
+              decimals: 18,
+            },
+            blockExplorerUrls: ["https://base-sepolia.blockscout.com"],
+          }],
+        });
+        console.log("✅ Сеть добавлена и переключена");
+      } catch (addError) {
+        console.error("❌ Ошибка добавления сети:", addError);
+      }
+    } else {
+      console.error("❌ Ошибка переключения сети:", switchError);
+    }
+  }
+}
+
+let chains = [baseSepolia];
 
 async function getPlatform() {
   try {
@@ -1264,7 +138,6 @@ async function getPlatform() {
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
       web3Modal = new Web3Modal({ projectId, theme: 'dark' }, ethereumClient);
-
       console.log("🌐");
     }
   } catch (error) {
@@ -1312,6 +185,7 @@ async function checkWalletConnection() {
         if (w3mCore) w3mCore.style.display = "none";
         userAccount = account.address;
         checkPriorityName();
+        switchToBase();
       } else {
         const unwatch = watchAccount((updatedAccount) => {
           if (updatedAccount.isConnected) {
@@ -1320,6 +194,7 @@ async function checkWalletConnection() {
             if (w3mCore) w3mCore.style.display = "none";
             userAccount = updatedAccount.address;
             checkPriorityName();
+            switchToBase();
           }
         });
       }
@@ -1341,7 +216,7 @@ function getRefCode() {
 const sections = {
   mining: document.getElementById("mining"),
   profile: document.getElementById("profile"),
-  leaderboard: document.getElementById("leaderboard"),
+  tasks: document.getElementById("tasks"),
   invite: document.getElementById("invite"),
   about: document.getElementById("about"),
 };
@@ -1349,7 +224,7 @@ const sections = {
 const buttonsm = {
   miningbtn: "mining",
   profilebtn: "profile",
-  leaderboardbtn: "leaderboard",
+  tasksbtn: "tasks",
   invitebtn: "invite",
   aboutbtn: "about",
 };
@@ -1358,7 +233,7 @@ const loadedSections = {
   mining: false,
   profile: false,
   invite: false,
-  leaderboard: false,
+  tasks: false,
   about: false,
 };
 
@@ -1386,8 +261,8 @@ async function loadSectionWithLoader(section) {
       const loadFunctions = {
         mining: miningfunctions,
         profile: profileInfo,
+        tasks: TasksInfo,
         invite: Inviteinfo,
-        leaderboard: LeaderboardInfo,
       };
 
       if (loadFunctions[section]) {
@@ -1471,7 +346,7 @@ async function checkPriorityName() {
 
     document.body.classList.add('site-active');
     document.getElementById("site").style.display = "flex";
-    await getPriorityName('mining', miningfunctions);
+    await getPriorityName('mining');
   } catch (err) {
     console.error("Error getting priority name:", err);
   }
@@ -1481,6 +356,7 @@ async function profileInfo() {
   const nameProfile = document.getElementById('username');
   const Profilelogo = document.getElementById('profilelogo');
   const adrs = document.getElementById('useraddress');
+
   const shortadrs = shortenAddress(userAccount);
   adrs.textContent = shortadrs;
 
@@ -1517,6 +393,9 @@ async function profileInfo() {
     nameProfile.textContent = name;
     const namesContainer = document.getElementById('namesContainer');
     namesContainer.innerHTML = '';
+
+    const ipfsUrl = image.replace("ipfs://", "https://ipfs.io/ipfs/");
+    Profilelogo.src = ipfsUrl;
 
     names.forEach(playerName => {
       if (playerName === name) {
@@ -1560,6 +439,7 @@ async function setPriorityName(name, setActiveBtn) {
         args: [name],
       });
     } else {
+      await switchToBase();
       const tx = await writeContract({
           address: contractAddress1,
           abi: contractABI1,
@@ -1571,7 +451,7 @@ async function setPriorityName(name, setActiveBtn) {
 
 
     const receipt = await waitForTransaction({
-      chainId: 8453,
+      chainId: chainid,
       hash: txHash,
       confirmations: 1,
       timeout: 30000,
@@ -1579,7 +459,7 @@ async function setPriorityName(name, setActiveBtn) {
 
     if (receipt.status === 'success') {
       setActiveBtn.textContent = 'Success!';
-      await getPriorityName('profile', profileInfo);
+      await getPriorityName('profile');
     } else {
       setActiveBtn.textContent = 'Failed. Try again.';
       setActiveBtn.disabled = false;
@@ -1594,10 +474,9 @@ async function setPriorityName(name, setActiveBtn) {
   }
 }
 
-async function getPriorityName(bnn, funcc) {
+async function getPriorityName(bnn) {
   const profileImg = document.getElementById("profileImg");
   await loadSectionWithLoader(bnn);
-  await funcc();
   const nameProfile = document.getElementById('name');
 
   try {
@@ -1610,7 +489,8 @@ async function getPriorityName(bnn, funcc) {
     });
     if (name && nameProfile) {
       nameProfile.textContent = name;
-
+      const ipfsUrl = image.replace("ipfs://", "https://ipfs.io/ipfs/");
+      profileImg.src = ipfsUrl;
     }
     else {
       nameProfile.textContent = "Unnamed";
@@ -1718,6 +598,7 @@ mintBtnEl.addEventListener("click", async () => {
         value: price,
       });
     } else {
+      await switchToBase();
       const tx = await writeContract({
         address: contractAddress1,
         abi: contractABI1,
@@ -1729,7 +610,7 @@ mintBtnEl.addEventListener("click", async () => {
     }
 
     const receipt = await waitForTransaction({
-      chainId: 8453,
+      chainId: chainid,
       hash: txHash,
       confirmations: 1,
       timeout: 30000,
@@ -1777,6 +658,7 @@ async function upgradeLevel() {
         value: nextLevelCost,
       });
     } else {
+      await switchToBase();
       const tx = await writeContract({
           address: contractAddress2,
           abi: contractABI2,
@@ -1788,7 +670,7 @@ async function upgradeLevel() {
     }
 
     const receipt = await waitForTransaction({
-      chainId: 8453,
+      chainId: chainid,
       hash: txHash,
       confirmations: 1,
       timeout: 30000,
@@ -1842,6 +724,7 @@ async function dailyStrike() {
         value: valueInWei,
       });
     } else {
+      await switchToBase();
       const tx = await writeContract({
           address: contractAddress2,
           abi: contractABI2,
@@ -1854,7 +737,7 @@ async function dailyStrike() {
 
 
     const receipt = await waitForTransaction({
-      chainId: 8453,
+      chainId: chainid,
       hash: txHash,
       confirmations: 1,
       timeout: 30000,
@@ -1910,7 +793,6 @@ async function miningfunctions() {
       args: [userAccount],
       publicClient: publicClient,
     });
-
       const level = result[0];
       const balance = result[1];
       const rewarddaily = result[2];
@@ -1941,6 +823,7 @@ async function miningfunctions() {
 }
 
 async function Inviteinfo() {
+
     const refCode = await readContract({
       address: contractAddress2,
       abi: contractABI2,
@@ -1989,39 +872,283 @@ async function Inviteinfo() {
     });
 }
 
-async function LeaderboardInfo() {
-  const rank = await readContract({
-      address: contractAddress2,
-      abi: contractABI2,
-      functionName: 'getPlayerRank',
-      args: [userAccount],
-      publicClient: publicClient,
-    });
-  const topPlayers = await readContract({
-      address: contractAddress2,
-      abi: contractABI2,
-      functionName: 'getTopNPlayers',
-      args: [50],
-      publicClient: publicClient,
-    });
 
-  document.getElementById("player-rank").innerText = `${rank[1]}`;
-  document.getElementById("player-name").innerText = `${rank[0] || 'Unnamed'}`;
-  document.getElementById("player-balance").innerText = `${rank[2]}`;
+function formatNumberShort(n) {
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  return n.toString();
+}
 
-  const list = document.getElementById("topPlayersList");
-  list.innerHTML = "";
+async function TasksInfo() {
 
-  topPlayers.forEach((player, index) => {
-    const div = document.createElement("div");
-    div.className = "player-item";
-    div.innerHTML = `
-      <span class="player-rank-number">${index + 1}</span>
-      <span class="player-name">${player.name || 'Unnamed'}</span>
-      <span class="player-balance">${player.balance}</span>
-    `;
-    list.appendChild(div);
+  const RewardsInfo = await readContract({
+    address: contractAddress2,
+    abi: contractABI2,
+    functionName: 'getRewardsInfo',
+    args: [userAccount],
+    publicClient: publicClient,
   });
+  const AvailableRewards = await readContract({
+    address: contractAddress2,
+    abi: contractABI2,
+    functionName: 'getAvailableRewards',
+    args: [userAccount],
+    publicClient: publicClient,
+  });
+    console.log(AvailableRewards)
+
+  const rewardMilestones = {
+    referral: [3, 5, 10],
+    level: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    balance: [1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000],
+    strike: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+  };
+
+  const taskTitles = {
+    referral: 'Invite Friends',
+    level: 'Reach Level',
+    balance: 'Increase Balance',
+    strike: 'Collect daily Rewards',
+  };
+
+  const taskData = {
+    level: { value: RewardsInfo[0], available: AvailableRewards[1] },
+    referral: { value: RewardsInfo[2], available: AvailableRewards[0] },
+    balance: { value: Number(RewardsInfo[1]) / 1000, available: AvailableRewards[2] },
+    strike: { value: RewardsInfo[3], available: AvailableRewards[3] },
+  };
+
+  const taskList = document.getElementById('taskss');
+  taskList.style.display = 'block';
+  taskList.innerHTML = '';
+
+  for (let key of ['referral', 'level', 'balance', 'strike']) {
+    const { value, available } = taskData[key];
+    const milestones = rewardMilestones[key];
+    const title = taskTitles[key];
+
+    const maxValue = milestones[milestones.length - 1];
+    const progressPercent = Number(value);
+
+    const taskDiv = document.createElement('div');
+    taskDiv.className = 'task';
+
+    const milestoneSpans = milestones.map((m) => {
+      const left = (m / maxValue) * 100;
+      return `<span class="milestone" style="left:${left}%">${formatNumberShort(m)}</span>`;
+    }).join('');
+
+    taskDiv.innerHTML = `
+        <h3>${title}</h3>
+        <div class="progress-wrapper">
+          <div class="progress-container">
+            <div class="milestone-labels">${milestoneSpans}</div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progressPercent}%"></div>
+            </div>
+          </div>
+          <button class="mint-btn" ${available ? '' : 'disabled'}>Mint</button>
+        </div>
+      `;
+
+    const mintButton = taskDiv.querySelector('.mint-btn');
+    mintButton.addEventListener('click', async () => {
+      if (!available) return;
+      switch (key) {
+        case 'referral':
+          await mintReferralRewards(mintButton);
+          break;
+        case 'level':
+          await mintLevelRewards(mintButton);
+          break;
+        case 'balance':
+          await mintBalanceRewards(mintButton);
+          break;
+        case 'strike':
+          await mintStrikeRewards(mintButton);
+          break;
+      }
+    });
+
+    taskList.appendChild(taskDiv);
+  }
+}
+
+
+
+async function mintReferralRewards(mintButton) {
+  try {
+    mintButton.disabled = true;
+    mintButton.textContent = "Minting...";
+
+    let txHash;
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: "mintReferralRewards",
+      });
+    } else {
+        await switchToBase();
+      const tx = await writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: 'mintReferralRewards',
+      });
+      txHash = tx.hash;
+    }
+
+    const receipt = await waitForTransaction({
+      chainId: chainid,
+      hash: txHash,
+      confirmations: 1,
+      timeout: 30000,
+    });
+
+    if (receipt.status === 'success') {
+      mintButton.textContent = `Minted`;
+      await TasksInfo();
+    } else {
+      mintButton.textContent = `Try again`;
+      mintButton.disabled = false;
+    }
+  } catch (err) {
+    console.error(err);
+    mintButton.textContent = `Try again`;
+    mintButton.disabled = false;
+  }
+}
+
+async function mintLevelRewards(mintButton) {
+  try {
+    mintButton.disabled = true;
+    mintButton.textContent = "Minting...";
+
+    let txHash;
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: "mintLevelRewards",
+      });
+    } else {
+        await switchToBase();
+      const tx = await writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: 'mintLevelRewards',
+      });
+      txHash = tx.hash;
+    }
+
+    const receipt = await waitForTransaction({
+      chainId: chainid,
+      hash: txHash,
+      confirmations: 1,
+      timeout: 30000,
+    });
+
+    if (receipt.status === 'success') {
+      mintButton.textContent = `Minted`;
+      await TasksInfo();
+    } else {
+      mintButton.textContent = `Try again`;
+      mintButton.disabled = false;
+    }
+  } catch (err) {
+    console.error(err);
+    mintButton.textContent = `Try again`;
+    mintButton.disabled = false;
+  }
+}
+
+async function mintBalanceRewards(mintButton) {
+  try {
+    mintButton.disabled = true;
+    mintButton.textContent = "Minting...";
+
+    let txHash;
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: "mintBalanceRewards",
+      });
+    } else {
+      await switchToBase();
+      const tx = await writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: 'mintBalanceRewards',
+      });
+      txHash = tx.hash;
+    }
+
+    const receipt = await waitForTransaction({
+      chainId: chainid,
+      hash: txHash,
+      confirmations: 1,
+      timeout: 30000,
+    });
+
+    if (receipt.status === 'success') {
+      mintButton.textContent = `Minted`;
+      await TasksInfo();
+    } else {
+      mintButton.textContent = `Try again`;
+      mintButton.disabled = false;
+    }
+  } catch (err) {
+    console.error(err);
+    mintButton.textContent = `Try again`;
+    mintButton.disabled = false;
+  }
+}
+
+async function mintStrikeRewards(mintButton) {
+  try {
+    mintButton.disabled = true;
+    mintButton.textContent = "Minting...";
+
+    let txHash;
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: "mintStrikeRewards",
+      });
+    } else {
+      await switchToBase();
+      const tx = await writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: 'mintStrikeRewards',
+      });
+      txHash = tx.hash;
+    }
+
+    const receipt = await waitForTransaction({
+      chainId: chainid,
+      hash: txHash,
+      confirmations: 1,
+      timeout: 30000,
+    });
+
+    if (receipt.status === 'success') {
+      mintButton.textContent = `Minted`;
+      await TasksInfo(); // перерисовываем блок с заданиями
+    } else {
+      mintButton.textContent = `Try again`;
+      mintButton.disabled = false;
+    }
+  } catch (err) {
+    console.error(err);
+    mintButton.textContent = `Try again`;
+    mintButton.disabled = false;
+  }
 }
 
 const nameInputpr = document.getElementById("namein");
@@ -2135,6 +1262,7 @@ mintBtnpr.addEventListener("click", async () => {
         value: price,
       });
     } else {
+      await switchToBase();
       const tx = await writeContract({
           address: contractAddress1,
           abi: contractABI1,
@@ -2146,7 +1274,7 @@ mintBtnpr.addEventListener("click", async () => {
     }
 
     const receipt = await waitForTransaction({
-      chainId: 8453,
+      chainId: chainid,
       hash: txHash,
       confirmations: 1,
       timeout: 30000,
