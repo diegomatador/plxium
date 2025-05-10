@@ -848,6 +848,7 @@ async function Inviteinfo() {
       args: [userAccount],
       publicClient: publicClient,
     });
+    console.log(result)
     const count = parseInt(result[0]);
     const addresses = result[1];
     const balances = parseInt(result[2]);
