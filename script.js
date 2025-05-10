@@ -848,10 +848,10 @@ async function Inviteinfo() {
       args: [userAccount],
       publicClient: publicClient,
     });
-
-    const count = parseInt(result[0]);
-    const balances = result[1];
-    const names = result[2];
+    
+    const count = Number(result[0]);           // BigInt → Number
+    const balances = result[1];                // массив BigInt
+    const names = result[2];                   // массив строк
     
     const list = document.getElementById("referralsList");
     list.innerHTML = "";
