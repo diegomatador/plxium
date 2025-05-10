@@ -849,9 +849,9 @@ async function Inviteinfo() {
       publicClient: publicClient,
     });
     
-    const count = Number(result[0]);           // BigInt → Number
-    const balances = result[1];                // массив BigInt
-    const names = result[2];                   // массив строк
+    const count = Number(result[0]); 
+    const balances = result[1];      
+    const names = result[2];    
     
     const list = document.getElementById("referralsList");
     list.innerHTML = "";
@@ -927,7 +927,7 @@ async function TasksInfo() {
     const title = taskTitles[key];
 
     const maxValue = milestones[milestones.length - 1];
-    const progressPercent = Number(value);
+    const progressPercent = Math.min(Number(value), 100);
 
     const taskDiv = document.createElement('div');
     taskDiv.className = 'task';
