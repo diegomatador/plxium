@@ -848,29 +848,28 @@ async function Inviteinfo() {
       args: [userAccount],
       publicClient: publicClient,
     });
-    console.log(result)
-    const count = parseInt(result[0]);
-    const addresses = result[1];
-    const balances = parseInt(result[2]);
-    const names = result[3];
 
+    const count = parseInt(result[0]);
+    const balances = result[1];
+    const names = result[2];
+    
     const list = document.getElementById("referralsList");
     list.innerHTML = "";
-
+    
     const countBlock = document.createElement("div");
     countBlock.className = "referral-count";
     countBlock.innerHTML = `<p>You have <span class="count-number">${count}</span> referral${count !== 1 ? "s" : ""}</p>`;
     list.appendChild(countBlock);
-
+    
     names.forEach((name, index) => {
-    const item = document.createElement("div");
-    item.className = "referral-item";
-    item.innerHTML = `
-      <span class="referral-name">${name || "Unnamed"}</span>
-      <span class="referral-balance">${balances[index]}</span>
-    `;
-    list.appendChild(item);
-  });
+      const item = document.createElement("div");
+      item.className = "referral-item";
+      item.innerHTML = `
+        <span class="referral-name">${name || "Unnamed"}</span>
+        <span class="referral-balance">${balances[index]}</span>
+      `;
+      list.appendChild(item);
+    });
 }
 
 
