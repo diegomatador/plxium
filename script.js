@@ -861,15 +861,15 @@ async function Inviteinfo() {
     countBlock.innerHTML = `<p>You have <span class="count-number">${count}</span> referral${count !== 1 ? "s" : ""}</p>`;
     list.appendChild(countBlock);
 
-    addresses.forEach((address, index) => {
-      const item = document.createElement("div");
-      item.className = "referral-item";
-      item.innerHTML = `
-        <span class="referral-name">${names[index] || "Unnamed"}</span>
-        <span class="referral-balance">${balances[index]}</span>
-      `;
-      list.appendChild(item);
-    });
+    names.forEach((name, index) => {
+    const item = document.createElement("div");
+    item.className = "referral-item";
+    item.innerHTML = `
+      <span class="referral-name">${name || "Unnamed"}</span>
+      <span class="referral-balance">${balances[index]}</span>
+    `;
+    list.appendChild(item);
+  });
 }
 
 
