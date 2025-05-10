@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>PlXium</title>
+  <title>PLXium</title>
   <link rel="icon" href="images/iconlogo.webp" type="image/webp" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rubik&display=swap" rel="stylesheet">
@@ -18,6 +18,176 @@
     @media (max-width: 768px) { body.site-active { background-size: 100% 100%; } }
     w3m-core-button { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; --w3m-accent-color: black; }
   </style>
+    <style>
+#tasks {
+  font-family: 'Arial Black';
+  margin-top: 15vh;
+  width: 75%;
+  margin-left: 25%;
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+
+.taskss {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.task {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  padding: 12px 10px 15px 10px;
+  border: 1px solid #444;
+  border-radius: 35px;
+  background: linear-gradient(to right, #0e6073, #08573f);
+  color: white;
+  position: relative;
+  transition: transform 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.task h3 {
+  text-align: center;
+  margin: 5px 0 10px 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+
+.progress-container {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+  width: 85vw;
+  margin-left: 15px;
+}
+
+.milestone-labels {
+  position: absolute;
+  top: -15px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.milestone-labels .milestone {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: black;
+}
+
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #444;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #00f260, #0575e6);
+  border-radius: 5px;
+}
+
+.mint-btn {
+  padding: 12px 30px;
+  border-radius: 999px;
+  background-color: #0e6073;
+  color: white;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 16px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  min-width: 120px;
+  font-weight: bold;
+}
+
+.mint-btn:disabled {
+  background: #555;
+}
+@media screen and (max-width: 768px) {
+  #tasks {
+    margin-top: 10vh;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    padding-bottom: 20px;
+  }
+
+  .taskss {
+    gap: 25px; /* увеличено расстояние между задачами */
+  }
+
+  .task {
+    padding: 15px 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    border-radius: 35px;
+    background: linear-gradient(to right, #0e6073, #08573f);
+    color: white;
+    position: relative;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .task h3 {
+    font-size: 18px;
+    margin: 7px 0 15px 0;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .progress-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    padding-left: 0;
+  }
+
+  .progress-container {
+    width: 100%;
+    margin-left: 0;
+    align-self: center;
+  }
+
+  .mint-btn {
+    font-size: 16px;
+    padding: 12px 30px;
+    min-width: 120px;
+    width: auto;
+    align-self: center;
+    text-align: center;
+    margin-top: 15px;
+    border-radius: 35px;
+    background-color: #0e6073;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .mint-btn:hover {
+    background-color: #074c49;
+    transform: scale(1.1);
+  }
+}
+    </style>
+
 </head>
 <body>
     <div id="loader" class="loader"></div>
@@ -50,8 +220,8 @@
           </div>
           <button class="active" id="miningbtn">Mining</button>
           <button aria-label="Profile" id="profilebtn">Profile</button>
+            <button aria-label="Tasks" id="tasksbtn">Tasks</button>
           <button aria-label="Invite" id="invitebtn">Invite</button>
-          <button aria-label="Leaderboard" id="leaderboardbtn">Leaderboard</button>
           <button aria-label="About" id="aboutbtn">About</button>
 
           <div class="footer-icons">
@@ -102,7 +272,7 @@
 
     <div id="profile" style="display: none;">
         <div class="topprofile">
-          <img src="images/profilelogo.webp" id="profilelogo" />
+          <img id="profilelogo" />
           <div class="info">
             <span id="username">...</span>
             <p>
@@ -137,24 +307,11 @@
       </div>
     </div>
 
-    <div id="leaderboard" style="display: none;">
-      <div class="player-rank highlight-player">
-          <div class="player-column">
-            <span class="label">RANK</span>
-            <span class="player-rank-number" id="player-rank">#1</span>
-          </div>
-          <div class="player-column">
-            <span class="label">NAME</span>
-            <span class="player-name" id="player-name">name</span>
-          </div>
-          <div class="player-column">
-            <span class="label">BALANCE</span>
-            <span class="player-balance" id="player-balance">0</span>
-          </div>
+    <div id="tasks" style="display: none;">
+        <div id="taskss">
         </div>
-      <div class="top-players-list" id="topPlayersList">
-      </div>
     </div>
+
     <div id="about" style="display: none;">
       <h2>About PLXium</h2>
       <p>
@@ -171,6 +328,7 @@
       </p>
     </div>
     </div>
+<script type="module" src="contracts.js"></script>
 <script type="module" src="script.js"></script>
 <script>
   const sideMenu = document.getElementById('sideMenu');
