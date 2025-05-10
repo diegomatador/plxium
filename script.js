@@ -911,8 +911,8 @@ async function TasksInfo() {
   };
 
   const taskData = {
-    level: { value: Number(RewardsInfo[0]) * 10, available: AvailableRewards[1] },
-    referral: { value: RewardsInfo[2], available: AvailableRewards[0] },
+    level: { value: RewardsInfo[0], available: AvailableRewards[1] },
+    referral: { value: Number(RewardsInfo[2]) * 10, available: AvailableRewards[0] },
     balance: { value: Number(RewardsInfo[1]) / 1000, available: AvailableRewards[2] },
     strike: { value: RewardsInfo[3], available: AvailableRewards[3] },
   };
