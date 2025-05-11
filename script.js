@@ -346,7 +346,8 @@ async function checkPriorityName() {
 
     document.body.classList.add('site-active');
     document.getElementById("site").style.display = "flex";
-    await getPriorityName('mining');
+    await getPriorityName();
+    await loadSectionWithLoader("mining");
   } catch (err) {
     console.error("Error getting priority name:", err);
   }
@@ -458,8 +459,9 @@ async function setPriorityName(name, setActiveBtn) {
     });
 
     if (receipt.status === 'success') {
-      setActiveBtn.textContent = 'Success!';
-      await getPriorityName('profile');
+          setActiveBtn.textContent = 'Success!';
+          await getPriorityName();
+          await profileInfo();
     } else {
       setActiveBtn.textContent = 'Failed. Try again.';
       setActiveBtn.disabled = false;
@@ -474,9 +476,8 @@ async function setPriorityName(name, setActiveBtn) {
   }
 }
 
-async function getPriorityName(bnn) {
+async function getPriorityName() {
   const profileImg = document.getElementById("profileImg");
-  await loadSectionWithLoader(bnn);
   const nameProfile = document.getElementById('name');
 
   try {
@@ -764,7 +765,6 @@ document.getElementById("powerup").addEventListener("click", upgradeLevel);
 document.getElementById("collectr").addEventListener("click", dailyStrike);
 
 async function miningfunctions() {
-  const collectr = document.getElementById('collectr');
   const powerup = document.getElementById('powerup');
   const levels = document.getElementById('level');
   const balances = document.getElementById('balance');
@@ -808,14 +808,21 @@ async function miningfunctions() {
       rewarddailys.textContent = `${rewarddaily}`;
       updateLevelProgress(percentToNextLevel);
     }
+
+    const collectr = document.getElementById('collectr');
     if (striked) {
-      document.getElementById("neonsquare").style.display = "none";
-      document.getElementById("blinkingcircle").style.display = "none";
-      collectr.style.display = "flex";
-      document.getElementById('miningImg').classList.add('disabled');
+        document.getElementById('neon').classList.add('disabled');
+        document.getElementById('cc').classList.add('disabled');
+        document.getElementById('fan').classList.add('disabled');
+        document.getElementById('case').classList.add('disabled');
+        collectr.style.display = "flex";
     } else {
+      document.getElementById('neon').classList.remove('disabled');
+        document.getElementById('cc').classList.remove('disabled');
+        document.getElementById('fan').classList.remove('disabled');
+        document.getElementById('case').classList.remove('disabled');
+      document.getElementById('fan').classList.add('active');
       collectr.style.display = "none";
-      document.getElementById('miningImg').classList.remove('disabled');
     }
   } catch (err) {
     console.error("Error miningfunctions", err);
@@ -823,7 +830,6 @@ async function miningfunctions() {
 }
 
 async function Inviteinfo() {
-
     const refCode = await readContract({
       address: contractAddress2,
       abi: contractABI2,
@@ -894,7 +900,6 @@ async function TasksInfo() {
     args: [userAccount],
     publicClient: publicClient,
   });
-    console.log(AvailableRewards)
 
   const rewardMilestones = {
     referral: [3, 5, 10],
@@ -1283,7 +1288,8 @@ mintBtnpr.addEventListener("click", async () => {
     if (receipt.status === 'success') {
         mintBtnpr.textContent = `Minted`;
         document.getElementById("mintOverlay").style.display = "none";
-        await getPriorityName('profile', profileInfo);
+        await getPriorityName();
+        await profileInfo();
         }
         else {
         mintBtnpr.textContent = `Try again`;
