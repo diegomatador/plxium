@@ -123,7 +123,7 @@
 .collect-button:hover { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 25px #0e6073; }
 #case.disabled, #fan.disabled, #cc.disabled, #neon.disabled { opacity: 1.5; filter: grayscale(100%); pointer-events: none; }
 .fan { position: absolute; width: 175px; height: 175px;
-      background: url(images/fan.webp) center/cover no-repeat; transform: rotateX(10deg) rotateY(27deg);
+      background: url(fan.webp) center/cover no-repeat; transform: rotateX(10deg) rotateY(27deg);
       transition: all .3s ease; }
 
 
@@ -145,7 +145,7 @@
 .pc-case { position: absolute;
       top: 0px; left: 50%; transform: translateX(-50%);
       width: 370px; height: 340px;
-      background: url(images/case.webp) center/cover no-repeat; z-index: 2;}
+      background: url(case.webp) center/cover no-repeat; z-index: 2;}
 
 @keyframes spin {
     from { transform: rotateX(10deg) rotateY(27deg) rotate(0deg); }
