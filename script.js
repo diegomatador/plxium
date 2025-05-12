@@ -911,7 +911,7 @@ async function TasksInfo() {
   const taskTitles = {
     referral: 'Invite Friends',
     level: 'Reach Level',
-    balance: 'Increase Balance',
+    balance: 'Reach Balance',
     strike: 'Collect daily Rewards',
   };
 
