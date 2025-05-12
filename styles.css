@@ -121,15 +121,25 @@
       animation: pulse 1.5s infinite; display: flex;
       justify-content: center; align-items: center;}
 .collect-button:hover { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 25px #0e6073; }
-#case.disabled, #fan.disabled, #cc.disabled, #neon.disabled { opacity: 1.5; filter: grayscale(100%); pointer-events: none; }
-.fan { position: absolute; width: 175px; height: 175px;
-      background: url(fan.webp) center/cover no-repeat; transform: rotateX(10deg) rotateY(27deg);
+
+#case.disabled, #fan.disabled, #cc.disabled { opacity: 1; filter: grayscale(100%); pointer-events: none; }
+
+#neon.disabled {
+  animation: none !important;
+  filter: grayscale(100%);
+  opacity: 1;
+  pointer-events: none;
+  background-color: red;
+}
+
+.fan { position: absolute; width: 175px; height: 175px; transform: rotateX(10deg) rotateY(27deg);
       transition: all .3s ease; }
 
 
 .fan.top { top: 71px; left: 50px; z-index: 1; }
+
 .neon { width: 100px; height: 50px;
-  margin-top: 90px; margin-left: 250px; animation: glowEffect 3s infinite; filter: grayscale(100%); }
+  margin-top: 95px; margin-left: 250px; animation: glowEffect 3s infinite; filter: grayscale(100%); }
 
 @keyframes glowEffect {
   0% { filter: grayscale(100%); }
@@ -144,8 +154,7 @@
 
 .pc-case { position: absolute;
       top: 0px; left: 50%; transform: translateX(-50%);
-      width: 370px; height: 340px;
-      background: url(case.webp) center/cover no-repeat; z-index: 2;}
+      width: 370px; height: 340px; z-index: 2;}
 
 @keyframes spin {
     from { transform: rotateX(10deg) rotateY(27deg) rotate(0deg); }
