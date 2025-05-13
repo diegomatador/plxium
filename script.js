@@ -177,6 +177,7 @@ async function checkWalletConnection() {
         await sdk.actions.addFrame()
       }
     } else {
+
       const account = getAccount();
 
       if (account.isConnected) {
@@ -694,21 +695,6 @@ async function upgradeLevel() {
 async function dailyStrike() {
   const collectr = document.getElementById('collectr');
   try {
-    const valueInWei = BigInt("100000000000000");
-    const balanceData = await fetchBalance({ address: userAccount });
-    const balance = BigInt(balanceData.value);
-
-    if (balance < valueInWei) {
-      const originalText = collectr.textContent;
-      powerup.textContent = "Not enough balance for collect rewards!";
-      powerup.disabled = true;
-      setTimeout(() => {
-        powerup.textContent = originalText;
-        powerup.disabled = false;
-      }, 2000);
-
-      return;
-    }
 
     collectr.disabled = true;
     collectr.textContent = "Waiting for confirmation...";
@@ -721,7 +707,6 @@ async function dailyStrike() {
         abi: contractABI2,
         functionName: "dailyStrike",
         args: [],
-        value: valueInWei,
       });
     } else {
       await switchToBase();
@@ -730,11 +715,9 @@ async function dailyStrike() {
           abi: contractABI2,
           functionName: 'dailyStrike',
           args: [],
-          value: valueInWei.toString(),
         });
       txHash = tx.hash;
     }
-
 
     const receipt = await waitForTransaction({
       chainId: chainid,
@@ -1078,14 +1061,14 @@ async function mintBalanceRewards(mintButton) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
-        functionName: "mintAllBalanceRewards",
+        functionName: "mintBalanceRewards",
       });
     } else {
       await switchToBase();
       const tx = await writeContract({
         address: contractAddress2,
         abi: contractABI2,
-        functionName: 'mintAllBalanceRewards',
+        functionName: 'mintBalanceRewards',
       });
       txHash = tx.hash;
     }
