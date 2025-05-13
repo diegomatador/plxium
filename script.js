@@ -130,7 +130,6 @@ async function getPlatform() {
       ethProviderr = null;
 
       const wagmiConfig = createConfig({
-        autoConnect: true,
         connectors: w3mConnectors({ chains, projectId }),
         publicClient: publicClient,
         webSocketPublicClient,
