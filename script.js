@@ -177,11 +177,9 @@ async function checkWalletConnection() {
         await sdk.actions.addFrame()
       }
     } else {
-
       const account = getAccount();
 
       if (account.isConnected) {
-        console.log(account)
         loader.style.display = "none";
         if (w3mCore) w3mCore.style.display = "none";
         userAccount = account.address;
@@ -189,7 +187,6 @@ async function checkWalletConnection() {
         switchToBase();
       } else {
         const unwatch = watchAccount((updatedAccount) => {
-          console.log(unwatch)
           if (updatedAccount.isConnected) {
             unwatch();
             loader.style.display = "none";
