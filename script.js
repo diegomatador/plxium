@@ -189,6 +189,7 @@ async function checkWalletConnection() {
         switchToBase();
       } else {
         const unwatch = watchAccount((updatedAccount) => {
+          console.log(unwatch)
           if (updatedAccount.isConnected) {
             unwatch();
             loader.style.display = "none";
