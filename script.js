@@ -181,7 +181,7 @@ async function checkWalletConnection() {
       const account = getAccount();
 
       if (account.isConnected) {
-        console.log(account.length)
+        console.log(account)
         loader.style.display = "none";
         if (w3mCore) w3mCore.style.display = "none";
         userAccount = account.address;
