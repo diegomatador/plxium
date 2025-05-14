@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>PLXium</title>
-  <link rel="icon" href="images/iconlogo.webp" type="image/webp" />
+  <link rel="icon" href="static/images/iconlogo.webp" type="image/webp" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rubik&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="static/css/styles.css">
   <style>
-    body { margin: 0; background: url('images/backend.webp');
+    body { margin: 0; background: url('static/images/backend.webp');
       background-size: 100% 100%;
       display: flex; flex-direction: column; min-height: 100vh; user-select: none;
        -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -webkit-touch-callout: none; }
@@ -22,43 +22,67 @@
 
 <body>
     <div id="loader" class="loader"></div>
-    <w3m-core-button id="w3mСore" style="position: fixed; top: 50%; left: 50%;  transform: translate(-50%, -50%); z-index: 2; --w3m-accent-color: #0e6073;"></w3m-core-button>
-    <div id="mintSection">
-      <div style="color: white; text-align: center; margin-bottom: 20px;">
-        <h2 style="font-size: 2em; letter-spacing: 2px; color: #00f5ff; margin-bottom: 5px;">PLXium</h2>
-        <p style="font-family: 'Rubik', sans-serif; color: #ccc; font-size: 0.95em;">Your name’s your pass. <br><strong style="color: #00f5ff;">Your grind starts now.</strong></p>
-        <p style="margin-top: 15px;">Mint price by name length:</p>
-        <ul style="list-style: none; padding: 0; margin: 10px 0; font-size: 0.9em;">
-          <li>✨ <strong>3 letters</strong> — 0.01 ETH</li>
-          <li>🔹 <strong>4 letters</strong> — 0.005 ETH</li>
-          <li>🔸 <strong>5 letters</strong> — 0.003 ETH</li>
-          <li>🟢 <strong>6+ letters</strong> — 0.001 ETH</li>
-        </ul>
-        <p style="font-size: 0.8em; color: #888; font-family: 'Rubik', sans-serif;">* Unique names, min 3 chars</p>
-      </div>
 
-      <input type="text" id="nameInput" placeholder="Enter your name" style="margin-bottom: 10px; padding: 8px; width: 200px; border-radius: 6px; border: none;" />
-      <input type="text" id="refcodeInput" style="margin-bottom: 10px; padding: 8px; width: 200px; border-radius: 6px; border: none;" placeholder="Enter your ref code" />
-      <button id="mintBtn" style="padding: 10px 20px; border: none; background-color: #00f5ff; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer;">Mint</button>
-      <div id="mintStatus" style="color:white; margin-top:10px;"></div>
+    <w3m-core-button id="w3mСore" style="position: fixed; top: 50%; left: 50%;  transform: translate(-50%, -50%); z-index: 2; --w3m-accent-color: #0e6073;"></w3m-core-button>
+    <div id="mintSection" style="display: none;">
+
+        <div id="infoModal" class="modalBox" style="display: block;">
+          <div style="text-align: center; ">
+            <h2 style="font-size: 2em; letter-spacing: 2px; color: #00f5ff; margin-bottom: 10px;">Welcome to PLXium</h2>
+            <p style="font-family: URW Chancery L, cursive; color: white; font-size: 1em; line-height: 1.6;">
+              <strong>PLXium - </strong>is an onchain Web3 game where everything starts with your unique name.<br>
+              Earn tokens, upgrade your power, level up and complete quests.
+              Your name is your identity — it's unique NFT, tradable, and transferable.
+              Invite your friends and earn tokens for each referral!
+            </p>
+
+            <p style="font-family: 'Rubik', sans-serif; color: #aaa;">Mint price by name length:</p>
+            <ul style="font-family: URW Chancery L, cursive; color: white; list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+              <li>💎 <strong>3 letters</strong> — 0.01 ETH</li>
+              <li>🔹 <strong>4 letters</strong> — 0.005 ETH</li>
+              <li>🔸 <strong>5 letters</strong> — 0.003 ETH</li>
+              <li>🟢 <strong>6+ letters</strong> — 0.001 ETH</li>
+            </ul>
+            <p style="font-family: 'Rubik', sans-serif; color: #aaa; font-size: 0.9em; margin-top: 10px;">
+              You’ll be able to change your name later, but each name is unique.
+            </p>
+            <button id="closeModal" onclick="infoModalclose()" style="background: #00f5ff; color: #000; border: none; padding: 10px 20px; font-size: 1em; cursor: pointer; border-radius: 5px; margin-top: 25px; font-weight: bold;">
+              OK, Let’s Go!
+            </button>
+          </div>
+        </div>
+
+
+      <div id="gotoMint" class="modalBox" style="display: none;">
+          <div style="color: white; text-align: center; margin-bottom: 20px;">
+            <h2 style="font-size: 2em; letter-spacing: 2px; color: #00f5ff; margin-bottom: 5px;">PLXium</h2>
+            <p style="font-family: 'Rubik', sans-serif; color: #ccc; font-size: 0.95em;">Your name is your on-chain identity.. <br><strong style="color: #00f5ff;">Mint it. Own it. Start the grind.</strong></p>
+            <p style="font-size: 0.8em; color: #888; font-family: 'Rubik', sans-serif;">* Unique names, min 3 chars</p>
+          </div>
+
+          <input type="text" id="nameInput" placeholder="Enter your name" style="margin-bottom: 10px; padding: 8px; width: 200px; border-radius: 6px; border: none;" />
+          <input type="text" id="refcodeInput" style="margin-bottom: 10px; padding: 8px; width: 200px; border-radius: 6px; border: none;" placeholder="Enter your ref code" />
+          <button id="mintBtn" style="padding: 10px 20px; border: none; background-color: #00f5ff; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer;">Mint</button>
+          <div id="mintStatus" style="color:white; margin-top:10px;"></div>
+      </div>
     </div>
 
     <div class="site" id="site" style="display: none;">
         <div class="side-menu" id="sideMenu">
           <div class="logo">
-            <img src="images/logo.webp" alt="PlXium">
+            <img src="static/images/logo.webp" alt="PlXium">
             <h2>PLXium</h2>
           </div>
           <button class="active" id="miningbtn">Mining</button>
           <button aria-label="Profile" id="profilebtn">Profile</button>
-            <button aria-label="Tasks" id="tasksbtn">Tasks</button>
+          <button aria-label="Tasks" id="tasksbtn">Tasks</button>
           <button aria-label="Invite" id="invitebtn">Invite</button>
           <button aria-label="About" id="aboutbtn">About</button>
 
           <div class="footer-icons">
-            <img src="images/x.webp" alt="X" onclick="window.open('https://x.com/plxium', '_blank');">
-            <img src="images/telegram.webp" alt="Telegram" onclick="window.open('https://t.me/plxium', '_blank');">
-            <img src="images/warpcast.webp" alt="Warpcast" onclick="window.open('https://warpcast.com/plxium', '_blank');">
+            <img src="static/images/x.webp" alt="X" onclick="window.open('https://x.com/plxium', '_blank');">
+            <img src="static/images/telegram.webp" alt="Telegram" onclick="window.open('https://t.me/plxium', '_blank');">
+            <img src="static/images/warpcast.webp" alt="Warpcast" onclick="window.open('https://warpcast.com/ploxoy', '_blank');">
         </div>
         </div>
         <div class="menu-handle" id="menuHandle" onclick="toggleMenu()"><span>&#8801</span></div>
@@ -92,8 +116,8 @@
          </div>
           <div class="mining-center" id="miningcenter">
             <div class="wrapper" id="wrapper">
-                <img src="images/fan.webp" class="fan top" id="fan">
-                <img src="images/case.webp" class="pc-case" id="case">
+                <img src="static/images/fan.webp" class="fan top" id="fan">
+                <img src="static/images/case.webp" class="pc-case" id="case">
                 <div class="neon" id="neon"> </div>
                 <div class="cc" id="cc"> </div>
                 <button id="collectr" class="collect-button" style="display: none;">Collect Reward</button>
@@ -145,24 +169,30 @@
     </div>
 
     <div id="about" style="display: none;">
-      <h2>About PLXium</h2>
+      <h2>PLXium</h2>
       <p>
-        <strong>PLXium</strong> is a crypto-powered mining game where you build and upgrade your own mining rig to collect coins and climb the leaderboard.
+        <strong>PLXium</strong> is an on-chain mining game where every name is an NFT, and every upgrade pushes your rig closer to legendary status.
       </p>
       <ul>
-        <li>⛏️ Mine coins daily and grow your balance</li>
-        <li>⚙️ Upgrade your miner to boost efficiency</li>
-        <li>🏆 Compete in the global leaderboard</li>
-        <li>🎁 Invite friends and earn 300 PLX for each one!</li>
+        <li>💰 Mine coins daily and grow your balance</li>
+        <li>🚀 Upgrade your miner to boost speed & earnings</li>
+        <li>🎖️ Complete tasks and earn exclusive NFT badges</li>
+        <li>🧑‍🚀 Invite friends and earn 50 PLX for each one!</li>
       </ul>
       <p class="final-call">
-        Start mining, upgrade smart, and become a top PLXium miner!
+        Mint your name. Power your miner. Farm the chain. Be the alpha. 🦅
       </p>
     </div>
+
     </div>
-<script type="module" src="contracts.js"></script>
-<script type="module" src="script.js"></script>
+<script type="module" src="static/js/contracts.js"></script>
+<script type="module" src="static/js/script.js"></script>
 <script>
+
+   function infoModalclose() {
+      document.getElementById('infoModal').style.display = 'none';
+      document.getElementById('gotoMint').style.display = 'flex';
+   }
   const sideMenu = document.getElementById('sideMenu');
   const overlay = document.getElementById('overlay');
   const menuHandle = document.getElementById('menuHandle');
@@ -221,6 +251,8 @@
       closeMenu();
     }
   }
+
+
 
   document.addEventListener('click', (event) => {
     if (!sideMenu.contains(event.target) && !menuHandle.contains(event.target) && window.innerWidth <= 768) {
