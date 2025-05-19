@@ -526,10 +526,25 @@ async function checkName() {
   mintBtnEl.textContent = "Mint";
 
   if (!name) return;
+  if (!/^[a-zA-Z0-9]+$/.test(name)) {
+      setStatus("Name must contain only eng letters and numbers.", "error");
+      return;
+    }
+
   if (name.length < 3) {
     setStatus("Name must be at least 3 characters long.", "error");
     return;
   }
+
+  if (/\s/.test(name)) {
+      setStatus("Name must be one continuous word", "error");
+      return;
+    }
+
+  if (name.length > 32) {
+      setStatus("Name must be no more than 32 characters long.", "error");
+      return;
+    }
 
   try {
     const available = await readContract({
@@ -581,10 +596,12 @@ mintBtnEl.addEventListener("click", async () => {
 
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
+
     if (balance < BigInt(price)) {
       setStatus("Not enough balance for mint!");
       return;
     }
+
     mintBtnEl.textContent = `Waiting for confirmation...`;
     mintBtnEl.disabled = true;
 
@@ -812,6 +829,7 @@ async function miningfunctions() {
 }
 
 async function Inviteinfo() {
+
     const refCode = await readContract({
       address: contractAddress2,
       abi: contractABI2,
@@ -819,6 +837,7 @@ async function Inviteinfo() {
       args: [userAccount],
       publicClient: publicClient,
     });
+
   const fullRefLink = `https://plxium.xyz/?ref=${refCode}`;
   document.getElementById("refLink").innerText = fullRefLink;
 
@@ -875,6 +894,7 @@ async function TasksInfo() {
     args: [userAccount],
     publicClient: publicClient,
   });
+
   const AvailableRewards = await readContract({
     address: contractAddress2,
     abi: contractABI2,
@@ -888,6 +908,7 @@ async function TasksInfo() {
     level: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
     balance: [1000, 5000, 10000, 20000, 30000, 40000, 50000],
     strike: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    upgrade: [1, 3, 5, 10],
   };
 
   const taskTitles = {
@@ -895,26 +916,28 @@ async function TasksInfo() {
     level: 'Reach Level',
     balance: 'Reach Balance',
     strike: 'Collect daily Rewards',
+    upgrade: 'Upgrade Power',
   };
 
   const taskData = {
-    level: { value: RewardsInfo[0], available: AvailableRewards[1] },
-    referral: { value: Number(RewardsInfo[2]) * 10, available: AvailableRewards[0] },
-    balance: { value: (Number(RewardsInfo[1]) / 1000 / 50) * 100, available: AvailableRewards[2] },
-    strike: { value: RewardsInfo[3], available: AvailableRewards[3] },
+    level: { value: Number(RewardsInfo[0]), available: AvailableRewards[1] },
+    referral: { value: Number(RewardsInfo[2]), available: AvailableRewards[0] },
+    balance: { value: Number(RewardsInfo[1]), available: AvailableRewards[2] },
+    strike: { value: Number(RewardsInfo[3]), available: AvailableRewards[3] },
+    upgrade: { value: Number(RewardsInfo[4]), available: AvailableRewards[4] },
   };
 
   const taskList = document.getElementById('taskss');
   taskList.style.display = 'block';
   taskList.innerHTML = '';
 
-  for (let key of ['referral', 'level', 'balance', 'strike']) {
+  for (let key of ['referral', 'level', 'balance', 'strike', 'upgrade']) {
     const { value, available } = taskData[key];
     const milestones = rewardMilestones[key];
     const title = taskTitles[key];
 
     const maxValue = milestones[milestones.length - 1];
-    const progressPercent = Math.min(Number(value), 100);
+    const progressPercent = Math.min(Math.round((value / maxValue) * 100), 100);
 
     const taskDiv = document.createElement('div');
     taskDiv.className = 'task';
@@ -952,6 +975,9 @@ async function TasksInfo() {
           break;
         case 'strike':
           await mintStrikeRewards(mintButton);
+          break;
+        case 'upgrade':
+          await mintUpgradeRewards(mintButton);
           break;
       }
     });
@@ -1126,7 +1152,51 @@ async function mintStrikeRewards(mintButton) {
 
     if (receipt.status === 'success') {
       mintButton.textContent = `Minted`;
-      await TasksInfo(); // перерисовываем блок с заданиями
+      await TasksInfo();
+    } else {
+      mintButton.textContent = `Try again`;
+      mintButton.disabled = false;
+    }
+  } catch (err) {
+    console.error(err);
+    mintButton.textContent = `Try again`;
+    mintButton.disabled = false;
+  }
+}
+
+async function mintUpgradeRewards(mintButton) {
+  try {
+    mintButton.disabled = true;
+    mintButton.textContent = "Minting...";
+
+    let txHash;
+
+    if (isWarpcast) {
+      txHash = await walletClient.writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: "mintUpgradeRewards",
+      });
+    } else {
+      await switchToBase();
+      const tx = await writeContract({
+        address: contractAddress2,
+        abi: contractABI2,
+        functionName: 'mintUpgradeRewards',
+      });
+      txHash = tx.hash;
+    }
+
+    const receipt = await waitForTransaction({
+      chainId: chainid,
+      hash: txHash,
+      confirmations: 1,
+      timeout: 30000,
+    });
+
+    if (receipt.status === 'success') {
+      mintButton.textContent = `Minted`;
+      await TasksInfo();
     } else {
       mintButton.textContent = `Try again`;
       mintButton.disabled = false;
@@ -1172,12 +1242,27 @@ async function checkNamePr() {
   mintBtnpr.disabled = true;
   mintBtnpr.textContent = "Mint";
 
-  if (!name) return;
+    if (!name) return;
+
   if (name.length < 3) {
     setStatuss("Name must be at least 3 characters long.", "error");
     return;
   }
 
+  if (/\s/.test(name)) {
+      setStatuss("Name must be one continuous word", "error");
+      return;
+    }
+
+  if (!/^[a-zA-Z0-9]+$/.test(name)) {
+      setStatuss("Name must contain only eng letters and numbers.", "error");
+      return;
+    }
+
+  if (name.length > 32) {
+      setStatuss("Name must be no more than 32 characters long.", "error");
+      return;
+    }
   try {
     const available = await readContract({
       address: contractAddress1,
