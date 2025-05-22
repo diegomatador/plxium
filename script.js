@@ -396,11 +396,6 @@ async function profileInfo() {
     namesContainer.innerHTML = '';
 
     const nameLength = name.length;
-    const imageMap = {
-      3: "3.webp",
-      4: "4.webp",
-      5: "5.webp"
-    };
     const imageFile = imageMap[nameLength] || "6.webp";
     Profilelogo.src = `images/${imageFile}`;
 
@@ -481,6 +476,11 @@ async function setPriorityName(name, setActiveBtn) {
     setActiveBtn.disabled = false;
   }
 }
+const imageMap = {
+    3: "3.webp",
+    4: "4.webp",
+    5: "5.webp"
+};
 
 async function getPriorityName() {
   const profileImg = document.getElementById("profileImg");
@@ -496,8 +496,10 @@ async function getPriorityName() {
     });
     if (name && nameProfile) {
       nameProfile.textContent = name;
-      const ipfsUrl = image.replace("ipfs://", "https://ipfs.io/ipfs/");
-      profileImg.src = ipfsUrl;
+      const nameLength = name.length;
+
+      const imageFile = imageMap[nameLength] || "6.webp";
+      profileImg.src = `images/${imageFile}`;
     }
     else {
       nameProfile.textContent = "Unnamed";
