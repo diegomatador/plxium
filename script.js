@@ -395,8 +395,14 @@ async function profileInfo() {
     const namesContainer = document.getElementById('namesContainer');
     namesContainer.innerHTML = '';
 
-    const ipfsUrl = image.replace("ipfs://", "https://ipfs.io/ipfs/");
-    Profilelogo.src = ipfsUrl;
+    const nameLength = name.length;
+    const imageMap = {
+      3: "3.webp",
+      4: "4.webp",
+      5: "5.webp"
+    };
+    const imageFile = imageMap[nameLength] || "6.webp";
+    profileLogo.src = `images/${imageFile}`;
 
     names.forEach(playerName => {
       if (playerName === name) {
