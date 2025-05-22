@@ -402,7 +402,7 @@ async function profileInfo() {
       5: "5.webp"
     };
     const imageFile = imageMap[nameLength] || "6.webp";
-    profileLogo.src = `images/${imageFile}`;
+    Profilelogo.src = `images/${imageFile}`;
 
     names.forEach(playerName => {
       if (playerName === name) {
