@@ -217,8 +217,144 @@
 
 
 /* invitee */
-#invite { margin-top: 15vh; width: 75%; margin-left: 25%; color: white; font-family: 'Arial Black', sans-serif; display: flex; flex-direction: column; gap: 20px; height: 85vh; overflow: hidden; box-sizing: border-box; } .ref-link-container { background: linear-gradient(to right, #0e6073, #08573f); padding: 20px; border-radius: 20px; box-sizing: border-box; } .ref-link-container p { margin: 0 0 10px 0; font-size: 20px; text-transform: uppercase; } .ref-link-box { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 10px 20px; backdrop-filter: blur(6px); box-shadow: inset 0 0 10px #18C8FF33; box-sizing: border-box; } #refLink { color: #18C8FF; font-family: monospace; font-size: 16px; overflow-wrap: anywhere; } .copy-btn { background: #0e6073; color: white; border: none; border-radius: 10px; padding: 8px 16px; font-weight: bold; cursor: pointer; transition: 0.3s ease; } .copy-btn:hover { background: #18C8FF; } .referrals-list { flex: 1; overflow-y: auto; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 15px; backdrop-filter: blur(4px); box-shadow: inset 0 0 10px #18C8FF33; box-sizing: border-box; } .referral-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 18px; } .referral-item:nth-child(odd) { background: rgba(255, 255, 255, 0.03); } .referral-name { font-style: italic; color: #18C8FF; } .referral-balance { font-weight: bold; color: #fff; } .referral-count { text-align: center; font-size: 20px; font-weight: bold; color: #18C8FF; margin-bottom: 15px; text-shadow: 0 0 8px #9333EAaa; } .count-number { color: #fff; font-size: 24px; text-shadow: 0 0 10px #18C8FF88; } @media (max-width: 768px) { #invite { margin-top: 10vh; height: 90vh; width: 100%; margin-left: 0; padding: 8px; gap: 8px; box-sizing: border-box; } .ref-link-container { padding: 16px; } .ref-link-container p { font-size: 16px; } .ref-link-box { padding: 8px 16px; border: 1px solid rgba(255, 255, 255, 0.1); } #refLink { font-size: 14px; } .copy-btn { font-size: 14px; padding: 6px 12px; } .referrals-list { padding: 8px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; } .referral-item { padding: 8px; font-size: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); } .referral-count { font-size: 18px; } .count-number { font-size: 20px; } }
+#invite { margin-top: 15vh; width: 75%; margin-left: 25%; color: white; font-family: 'Arial Black', sans-serif; display: flex; flex-direction: column; gap: 10px; height: 85vh; overflow: hidden; box-sizing: border-box; }
 
+
+.ref-statistics {
+  text-align: center;
+  background: linear-gradient(to right, #0e6073, #08573f);
+  padding: 20px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  color: #fff;
+  box-shadow: 0 0 5px #18c8ff33;
+}
+
+.ref-statistics p {
+  margin: 0 0 15px 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffffdd;
+}
+
+.ref-box-container {
+  display: flex;
+  gap: 10vw;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.ref-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 5vw;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(6px);
+  box-shadow: inset 0 0 10px #18c8ff33;
+  box-sizing: border-box;
+}
+
+.ref-pair {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  font-size: 16px;
+  color: white;
+}
+
+.ref-link-container {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  border-radius: 15px;
+  color: #ffffffcc;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 3vh;
+  box-shadow: inset 0 0 10px #18c8ff33;
+}
+
+.ref-link-container p {
+  text-align: center;
+}
+
+.ref-link-container p.ref-info-title {
+  text-align: left;
+  margin-top: 3vh;
+}
+
+.ref-info-title {
+  text-align: left;
+  margin: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #18c8ff;
+  text-shadow: 0 0 5px #18c8ff88;
+  letter-spacing: 0.5px;
+}
+
+.ref-info-list {
+  list-style: decimal inside;
+  padding-left: 10px;
+  margin: 0;
+  color: #ffffffcc;
+  font-size: 14.5px;
+  line-height: 1.7;
+  height: 25vh;
+  box-sizing: border-box;
+}
+
+.ref-link-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  align-items: center;
+}
+
+.ref-link-text {
+  flex: 1 1 auto;
+  min-width: 170px;
+  word-break: break-all;
+  font-weight: bold;
+  margin: 5px 5px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ref-link-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.copy-btn,
+.share-btn,
+.share-option-btn {
+  background: #0e6073;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+@media (max-width: 769px) {
+  #invite {
+    margin-top: 10vh;
+    width: 100%;
+    height: 90vh;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
 
 /* tasks */
 #tasks {
@@ -227,7 +363,7 @@
   overflow: hidden; box-sizing: border-box;}
 
 .taskss { display: flex; flex-direction: column; gap: 30px;
-  height: 100%; box-sizing: border-box;}
+  height: 100%; box-sizing: border-box; }
 
 .task {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); padding: 10px;
