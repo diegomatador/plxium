@@ -152,15 +152,49 @@
     </div>
 
     <div id="invite" style="display: none;">
-      <div class="ref-link-container">
-        <p>Referral Code:</p>
-        <div class="ref-link-box">
-          <span id="refLink">https://plxium.xyz/?ref=xxxxxx</span>
-          <button id="copyRefBtn" class="copy-btn">Copy</button>
+        <div class="ref-statistics" id="refStatistics">
+            <p>Your Referral Statistics</p>
+
+            <div class="ref-box-container">
+              <div class="ref-box">
+                <div class="ref-pair">
+                  <span class="refs">Total Referrals:</span>
+                  <span class="ref-count" id="refcount">0</span>
+                </div>
+              </div>
+
+              <div class="ref-box">
+                <div class="ref-pair">
+                  <span class="label">Tokens Earned:</span>
+                  <span class="ref-earned" id="refearned">0</span>
+                </div>
+              </div>
+            </div>
+
         </div>
-      </div>
-      <div class="referrals-list" id="referralsList">
-      </div>
+        <div class="ref-link-container" id="refLinkContainer">
+          <p>Your Referral Link</p>
+
+          <div class="ref-link-row">
+            <span id="refLink" class="ref-link-text"></span>
+            <div class="ref-link-buttons">
+              <button id="copyRefBtn" class="copy-btn">Copy</button>
+              <button id="shareRefBtn" class="share-btn">Share</button>
+            </div>
+          </div>
+
+          <p class="ref-info-title"><strong>How to get Referral Rewards</strong></p>
+          <ul class="ref-info-list">
+            <li>Share your referral link</li>
+            <li>Your friends must register via link</li>
+            <li>You Receive tokens when registration is successful</li>
+          </ul>
+        </div>
+    </div>
+
+    <div id="shareOptions" style="display: none; margin-top: 10px;">
+        <button id="twitterShareBtn" class="share-option-btn">Share on X(Twitter)</button>
+        <button id="warpcastShareBtn" class="share-option-btn">Share on Farcaster</button>
     </div>
 
     <div id="tasks" style="display: none;">
