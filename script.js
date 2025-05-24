@@ -397,7 +397,7 @@ async function profileInfo() {
 
     const nameLength = name.length;
     const imageFile = imageMap[nameLength] || "6.webp";
-    Profilelogo.src = `images/${imageFile}`;
+    Profilelogo.src = `static/images/${imageFile}`;
 
     names.forEach(playerName => {
       if (playerName === name) {
@@ -499,7 +499,7 @@ async function getPriorityName() {
       const nameLength = name.length;
 
       const imageFile = imageMap[nameLength] || "6.webp";
-      profileImg.src = `images/${imageFile}`;
+      profileImg.src = `static/images/${imageFile}`;
     }
     else {
       nameProfile.textContent = "Unnamed";
@@ -838,53 +838,67 @@ async function miningfunctions() {
 
 async function Inviteinfo() {
 
-    const refCode = await readContract({
-      address: contractAddress2,
-      abi: contractABI2,
-      functionName: 'getReferralCode',
-      args: [userAccount],
-      publicClient: publicClient,
-    });
-
-  const fullRefLink = `https://plxium.xyz/?ref=${refCode}`;
-  document.getElementById("refLink").innerText = fullRefLink;
-
-  document.getElementById("copyRefBtn").onclick = () => {
-    navigator.clipboard.writeText(fullRefLink);
-    document.getElementById("copyRefBtn").innerText = "Copied!";
-    setTimeout(() => {
-      document.getElementById("copyRefBtn").innerText = "Copy";
-    }, 1000);
-  };
-    const result = await readContract({
+    const refinfo = await readContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getReferralsInfo',
       args: [userAccount],
       publicClient: publicClient,
     });
-    
-    const count = Number(result[0]); 
-    const balances = result[1];      
-    const names = result[2];    
-    
-    const list = document.getElementById("referralsList");
-    list.innerHTML = "";
-    
-    const countBlock = document.createElement("div");
-    countBlock.className = "referral-count";
-    countBlock.innerHTML = `<p>You have <span class="count-number">${count}</span> referral${count !== 1 ? "s" : ""}</p>`;
-    list.appendChild(countBlock);
-    
-    names.forEach((name, index) => {
-      const item = document.createElement("div");
-      item.className = "referral-item";
-      item.innerHTML = `
-        <span class="referral-name">${name || "Unnamed"}</span>
-        <span class="referral-balance">${balances[index]}</span>
-      `;
-      list.appendChild(item);
-    });
+    const refcount = document.getElementById("refcount");
+    const refearned = document.getElementById("refearned");
+
+    if (refinfo && refinfo.length > 0) {
+      const referrals = Number(refinfo[1]);
+      const refearnednumber = referrals * 50;
+
+      refcount.textContent = `${referrals}`;
+      refearned.textContent = `${refearnednumber}`;
+    }
+
+    const fullRefLink = `https://plxium.xyz/?ref=${refinfo[0]}`;
+    const refLink = document.getElementById("refLink");
+    refLink.textContent = `${fullRefLink}`;
+
+    document.getElementById("copyRefBtn").onclick = () => {
+      navigator.clipboard.writeText(fullRefLink);
+      document.getElementById("copyRefBtn").innerText = "Copied!";
+      setTimeout(() => {
+        document.getElementById("copyRefBtn").innerText = "Copy";
+      }, 1000);
+    };
+
+    document.getElementById("shareRefBtn").onclick = () => {
+      if (isWarpcast) {
+        const shareOptions = document.getElementById("shareOptions");
+        shareOptions.style.display = shareOptions.style.display === "none" ? "block" : "none";
+      } else {
+        const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
+        const tweetUrl = encodeURIComponent(fullRefLink);
+        const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
+        window.open(twitterShareUrl, "_blank");
+      }
+    };
+
+    if (isWarpcast) {
+      document.getElementById("twitterShareBtn").onclick = () => {
+        const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
+        const tweetUrl = encodeURIComponent(fullRefLink);
+        const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
+        window.open(twitterShareUrl, "_blank");
+      };
+
+      document.getElementById("warpcastShareBtn").onclick = async () => {
+        try {
+          await window.warpcast.share({
+            text: "Join me in PLXium and start mining 🚀",
+            url: fullRefLink,
+          });
+        } catch (error) {
+          console.error("Warpcast share failed:", error);
+        }
+      };
+    }
 }
 
 
