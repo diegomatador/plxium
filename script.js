@@ -397,7 +397,7 @@ async function profileInfo() {
 
     const nameLength = name.length;
     const imageFile = imageMap[nameLength] || "6.webp";
-    Profilelogo.src = `static/images/${imageFile}`;
+    Profilelogo.src = `images/${imageFile}`;
 
     names.forEach(playerName => {
       if (playerName === name) {
@@ -499,7 +499,7 @@ async function getPriorityName() {
       const nameLength = name.length;
 
       const imageFile = imageMap[nameLength] || "6.webp";
-      profileImg.src = `static/images/${imageFile}`;
+      profileImg.src = `images/${imageFile}`;
     }
     else {
       nameProfile.textContent = "Unnamed";
