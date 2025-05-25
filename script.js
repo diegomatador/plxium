@@ -375,7 +375,7 @@ async function profileInfo() {
     });
 
   try {
-    const [name, image] = await readContract({
+    const name = await readContract({
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getPriorityName',
@@ -487,7 +487,7 @@ async function getPriorityName() {
   const nameProfile = document.getElementById('name');
 
   try {
-    const [name, image] = await readContract({
+    const name = await readContract({
       address: contractAddress1,
       abi: contractABI1,
       functionName: 'getPriorityName',
