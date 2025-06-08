@@ -873,8 +873,7 @@ async function Inviteinfo() {
         const shareOptions = document.getElementById("shareOptions");
         shareOptions.style.display = shareOptions.style.display === "none" ? "block" : "none";
       } else {
-        const tweetText = encodeURIComponent("Get your name and  mine rewards 🚀"\n
-                                            "Join me in PLXium");
+        const tweetText = encodeURIComponent("Get your name and mine rewards 🚀\nJoin me in PLXium");
         const tweetUrl = encodeURIComponent(fullRefLink);
         const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
         window.open(twitterShareUrl, "_blank");
@@ -883,7 +882,7 @@ async function Inviteinfo() {
 
     if (isWarpcast) {
       document.getElementById("twitterShareBtn").onclick = () => {
-        const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
+        const tweetText = encodeURIComponent("Get your name and mine rewards 🚀\nJoin me in PLXium");
         const tweetUrl = encodeURIComponent(fullRefLink);
         const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
         window.open(twitterShareUrl, "_blank");
@@ -892,7 +891,7 @@ async function Inviteinfo() {
       document.getElementById("warpcastShareBtn").onclick = async () => {
         try {
           await window.warpcast.share({
-            text: "Join me in PLXium and start mining 🚀",
+            text: "Join me in PLXium — claim your name and start mining rewards!",
             url: fullRefLink,
           });
         } catch (error) {
