@@ -33,7 +33,7 @@
               <strong>PLXium - </strong>is an onchain Web3 game where everything starts with your unique name.<br>
               Earn tokens, upgrade your power, level up and complete quests.
               Your name is your identity — it's unique NFT, tradable, and transferable.
-              Invite your friends and earn tokens for each referral!
+              Invite your friends and earn 50 $PLX + 10% of their mint payment in ETH — instantly!
             </p>
 
             <p style="font-family: 'Rubik', sans-serif; color: #aaa;">Mint price by name length:</p>
@@ -166,9 +166,17 @@
               <div class="ref-box">
                 <div class="ref-pair">
                   <span class="label">Tokens Earned:</span>
-                  <span class="ref-earned" id="refearned">0</span>
+                  <span class="ref-earned" id="refEarned">0</span>
                 </div>
               </div>
+
+              <div class="ref-box">
+                <div class="ref-pair">
+                  <span class="label">Earned Eth:</span>
+                  <span class="ref-earned" id="refEarnedEth">0</span>
+                </div>
+              </div>
+
             </div>
 
         </div>
@@ -186,8 +194,8 @@
           <p class="ref-info-title"><strong>How to get Referral Rewards</strong></p>
           <ul class="ref-info-list">
             <li>Share your referral link</li>
-            <li>Your friends must join the game using your link</li>
-            <li>You receive tokens when they successfully enter the game</li>
+            <li>Your friends must register via link</li>
+            <li>You Receive 50 $PLX and 10% of their mint payment in ETH when registration is successful!</li>
           </ul>
         </div>
     </div>
@@ -211,10 +219,10 @@
         <li>💰 Collect your coins every 12 hours and grow your balance</li>
         <li>🚀 Upgrade your miner to boost speed & earnings</li>
         <li>🎖️ Complete tasks and earn exclusive NFT badges</li>
-        <li>👥 Invite friends and earn 50 PLX for each one!</li>
+        <li>👥 Refer friends and earn: 50 $PLX + 10% of their mint payment in ETH.</li>
       </ul>
       <p class="final-call">
-        Power your miner. Farm the chain. Be the alpha. 🦅
+        Mint your name. Power your miner. Farm the chain. Be the alpha. 🦅
       </p>
     </div>
 
@@ -285,8 +293,6 @@
       closeMenu();
     }
   }
-
-
 
   document.addEventListener('click', (event) => {
     if (!sideMenu.contains(event.target) && !menuHandle.contains(event.target) && window.innerWidth <= 768) {
