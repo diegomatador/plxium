@@ -837,26 +837,29 @@ async function miningfunctions() {
 }
 
 async function Inviteinfo() {
-
-    const refinfo = await readContract({
+    const refInfo = await readContract({
       address: contractAddress2,
       abi: contractABI2,
       functionName: 'getReferralsInfo',
       args: [userAccount],
       publicClient: publicClient,
     });
-    const refcount = document.getElementById("refcount");
-    const refearned = document.getElementById("refearned");
+    const refCount = document.getElementById("refcount");
+    const refEarned = document.getElementById("refEarned");
+    const refEarnedEth = document.getElementById("refEarnedEth");
 
-    if (refinfo && refinfo.length > 0) {
-      const referrals = Number(refinfo[1]);
-      const refearnednumber = referrals * 50;
+    if (refInfo && refInfo.length > 0) {
 
-      refcount.textContent = `${referrals}`;
-      refearned.textContent = `${refearnednumber}`;
+      const referrals = Number(refInfo[1]);
+      const refEarnedNumber = referrals * 50;
+      const earnedEth = Number(refInfo[2]);
+
+      refCount.textContent = `${referrals}`;
+      refEarned.textContent = `${refEarnedNumber}`;
+      refEarnedEth.textContent = `${earnedEth}`;
     }
 
-    const fullRefLink = `https://plxium.xyz/?ref=${refinfo[0]}`;
+    const fullRefLink = `https://plxium.xyz/?ref=${refInfo[0]}`;
     const refLink = document.getElementById("refLink");
     refLink.textContent = `${fullRefLink}`;
 
