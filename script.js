@@ -931,8 +931,8 @@ async function TasksInfo() {
   const rewardMilestones = {
     referral: [3, 5, 10],
     level: [3, 5, 10, 20, 30],
-    balance: [1000, 5000, 10000, 20000, 30000, 50000],
-    strike: [3, 5, 10, 20, 30, 50],
+    balance: [1000, 5000, 10000, 20000, 30000],
+    strike: [3, 10, 30, 50],
     upgrade: [1, 3, 5, 10],
   };
 
