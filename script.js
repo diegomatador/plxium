@@ -395,6 +395,11 @@ async function profileInfo() {
     const namesContainer = document.getElementById('namesContainer');
     namesContainer.innerHTML = '';
 
+    const profilelogo = document.getElementById('profilelogo');
+    if (borderColor) {
+        profilelogo.style.border = `5px solid ${borderColor}`;
+    }
+
     const nameLength = name.length;
     const imageFile = imageMap[nameLength] || "6.webp";
     Profilelogo.src = `images/${imageFile}`;
@@ -482,9 +487,12 @@ const imageMap = {
     5: "5.webp"
 };
 
+let borderColor;
+
 async function getPriorityName() {
   const profileImg = document.getElementById("profileImg");
   const nameProfile = document.getElementById('name');
+  const profileBorder = document.getElementById('profileBorder');
 
   try {
     const name = await readContract({
@@ -498,6 +506,17 @@ async function getPriorityName() {
       nameProfile.textContent = name;
       const nameLength = name.length;
 
+    if (nameLength === 3) {
+        borderColor = '#e5e4e2';
+    } else if (nameLength === 4) {
+        borderColor = '#ffd700';
+    } else if (nameLength === 5) {
+        borderColor = '#c0c0c0';
+    } else if (nameLength > 5) {
+        borderColor = '#cd7f32';
+    }
+
+      profileBorder.querySelector('img').style.border = `2px solid ${borderColor}`;
       const imageFile = imageMap[nameLength] || "6.webp";
       profileImg.src = `images/${imageFile}`;
     }
@@ -837,6 +856,7 @@ async function miningfunctions() {
 }
 
 async function Inviteinfo() {
+
     const refInfo = await readContract({
       address: contractAddress2,
       abi: contractABI2,
@@ -844,6 +864,7 @@ async function Inviteinfo() {
       args: [userAccount],
       publicClient: publicClient,
     });
+
     const refCount = document.getElementById("refcount");
     const refEarned = document.getElementById("refEarned");
     const refEarnedEth = document.getElementById("refEarnedEth");
@@ -852,7 +873,7 @@ async function Inviteinfo() {
 
       const referrals = Number(refInfo[1]);
       const refEarnedNumber = referrals * 50;
-      const earnedEth = Number(refInfo[2]) / 10**18;
+      const earnedEth = Number(refInfo[2]);
 
       refCount.textContent = `${referrals}`;
       refEarned.textContent = `${refEarnedNumber}`;
@@ -876,7 +897,7 @@ async function Inviteinfo() {
         const shareOptions = document.getElementById("shareOptions");
         shareOptions.style.display = shareOptions.style.display === "none" ? "block" : "none";
       } else {
-        const tweetText = encodeURIComponent("Get your name and mine rewards 🚀\nJoin me in PLXium");
+        const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
         const tweetUrl = encodeURIComponent(fullRefLink);
         const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
         window.open(twitterShareUrl, "_blank");
@@ -885,7 +906,7 @@ async function Inviteinfo() {
 
     if (isWarpcast) {
       document.getElementById("twitterShareBtn").onclick = () => {
-        const tweetText = encodeURIComponent("Get your name and mine rewards 🚀\nJoin me in PLXium");
+        const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
         const tweetUrl = encodeURIComponent(fullRefLink);
         const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
         window.open(twitterShareUrl, "_blank");
@@ -894,7 +915,7 @@ async function Inviteinfo() {
       document.getElementById("warpcastShareBtn").onclick = async () => {
         try {
           await window.warpcast.share({
-            text: "Join me in PLXium — claim your name and start mining rewards!",
+            text: "Join me in PLXium and start mining 🚀",
             url: fullRefLink,
           });
         } catch (error) {
