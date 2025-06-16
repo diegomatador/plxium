@@ -930,9 +930,9 @@ async function TasksInfo() {
 
   const rewardMilestones = {
     referral: [3, 5, 10],
-    level: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-    balance: [1000, 5000, 10000, 20000, 30000, 40000, 50000],
-    strike: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    level: [3, 5, 10, 20, 30],
+    balance: [1000, 5000, 10000, 20000, 30000, 50000],
+    strike: [3, 5, 10, 20, 30, 50],
     upgrade: [1, 3, 5, 10],
   };
 
@@ -940,7 +940,7 @@ async function TasksInfo() {
     referral: 'Invite Friends',
     level: 'Reach Level',
     balance: 'Reach Balance',
-    strike: 'Collect daily Rewards',
+    strike: 'Collect Daily Tokens',
     upgrade: 'Upgrade Power',
   };
 
