@@ -507,7 +507,7 @@ async function getPriorityName() {
       const nameLength = name.length;
 
     if (nameLength === 3) {
-        borderColor = '#e5e4e2';
+        borderColor = '#009ff9';
     } else if (nameLength === 4) {
         borderColor = '#ffd700';
     } else if (nameLength === 5) {
