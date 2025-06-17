@@ -1,4 +1,4 @@
-export const contractAddress1 = "0x37272e7Ab32cf13048B488138b5d24e9e12aC1Bb";
+export const contractAddress1 = "0x64d1046565151b17FC03D6fdef27E5b8c8696a36";
 export const contractABI1 = [
   {
     "inputs": [],
@@ -398,6 +398,25 @@ export const contractABI1 = [
     "inputs": [
       {
         "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "hasUserRewards",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "owner",
         "type": "address"
       },
@@ -746,10 +765,24 @@ export const contractABI1 = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawOwner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawUser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ];
-  
-export const contractAddress2 = "0x590ad5a3193d36E523826e79D71C340851C74B74";
+
+export const contractAddress2 = "0xc43B79b2C7d30291De73Df424ff0ebe825Ca0CBB";
 export const contractABI2 = [
   {
     "inputs": [],
@@ -845,6 +878,19 @@ export const contractABI2 = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "cleanReferralEarnings",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -1126,7 +1172,7 @@ export const contractABI2 = [
         "type": "string"
       }
     ],
-    "name": "referreradress",
+    "name": "referrerAddress",
     "outputs": [
       {
         "internalType": "address",
