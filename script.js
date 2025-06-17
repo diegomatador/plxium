@@ -1472,8 +1472,8 @@ withdrawBtnpr.addEventListener("click", async () => {
 
         if (receipt.status === 'success') {
             withdrawBtnpr.textContent = `Success`;
-            await profileInfo();
             loadedSections.invite = false;
+            await profileInfo();
             }
             else {
             withdrawBtnpr.textContent = `Try again`;
