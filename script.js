@@ -891,7 +891,7 @@ async function Inviteinfo() {
 
       const referrals = Number(refInfo[1]);
       const refEarnedNumber = referrals * 50;
-      const earnedEth = Number(refInfo[2]);
+      const earnedEth = Number(refInfo[2]) / 10**18;
 
       refCount.textContent = `${referrals}`;
       refEarned.textContent = `${refEarnedNumber}`;
