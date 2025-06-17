@@ -17,15 +17,33 @@
     body.site-active { background-position: right center; background-repeat: no-repeat; background-size: 75% 100%; }
     @media (max-width: 768px) { body.site-active { background-size: 100% 100%; } }
     w3m-core-button { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; --w3m-accent-color: black; }
+    label { color: white; font-size: 0.7em; display: flex; align-items: center; user-select: none;}
+    @media (max-width: 768px) { label { font-size: 0.5em;}}
+    input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+    input[type="checkbox"]:disabled { cursor: not-allowed; opacity: 0.5;}
   </style>
 </head>
 
 <body>
     <div id="loader" class="loader"></div>
-
     <w3m-core-button id="w3mСore" style="position: fixed; top: 50%; left: 50%;  transform: translate(-50%, -50%); z-index: 2; --w3m-accent-color: #0e6073;"></w3m-core-button>
     <div id="mintSection" style="display: none;">
-
+        <div id="termsModal" class="modalOverlay" style="display: none;">
+            <div class="modalContent" style="text-align: center; color: white;">
+              <h2 style="font-size: 1.3em; letter-spacing: 2px; color: #00f5ff; margin-bottom: 10px;">Terms and Conditions</h2>
+              <p>
+                  This is a decentralized Web3 game for entertainment purposes only.<br>
+                  It does not provide any investment returns or guaranteed value.<br>
+                  Referral rewards are provided as part of the game’s referral program strictly for entertainment purposes.<br>
+                  No guarantees or warranties are made regarding the value or financial benefit of these rewards.<br>
+                  The game operator disclaims all liability for any use or misuse of referral rewards.<br>
+                  We do not assume any liability for your use of referral bonuses.<br>
+                  This is not an investment program or a passive income opportunity.
+              </p>
+              <button id="closeTermsBtn" style="background: #00f5ff; color: #000; border: none; padding: 10px 20px; font-size: 1em; cursor: pointer; border-radius: 5px; margin-top: 25px; font-weight: bold;">
+                  Agree and Continue</button>
+            </div>
+          </div>
         <div id="infoModal" class="modalBox" style="display: block;">
           <div style="text-align: center; ">
             <h2 style="font-size: 2em; letter-spacing: 2px; color: #00f5ff; margin-bottom: 10px;">Welcome to PLXium</h2>
@@ -46,11 +64,14 @@
             <p style="font-family: 'Rubik', sans-serif; color: #aaa; font-size: 0.9em; margin-top: 10px;">
               You’ll be able to change your name later, but each name is unique.
             </p>
-            <label style="color: #ccc; font-size: 0.85em; display: block; margin: 15px 0;">
-              <input type="checkbox" id="agreeTerms" />
-              I have read and agree to the <a href="/terms" target="_blank" style="color: #00f5ff;">Terms and Conditions</a>.
+            <label>
+                <input type="checkbox" id="agreeCheckbox" disabled />
+                I have read and agree to the <a id="openTerms" href="javascript:void(0)">Terms and Conditions</a>.
             </label>
-            <button id="closeModal" onclick="infoModalclose()" style="background: #00f5ff; color: #000; border: none; padding: 10px 20px; font-size: 1em; cursor: pointer; border-radius: 5px; margin-top: 25px; font-weight: bold;">
+            <div id="warningMessage" style="color: #f44336; font-size: 0.9em; margin-top: 10px; display: none;">
+              Please read and agree to Terms and Conditions.
+            </div>
+            <button id="okButton" style="background: #00f5ff; color: #000; border: none; padding: 10px 20px; font-size: 1em; cursor: pointer; border-radius: 5px; margin-top: 25px; font-weight: bold;">
               OK, Let’s Go!
             </button>
           </div>
@@ -238,11 +259,38 @@
 <script type="module" src="contracts.js"></script>
 <script type="module" src="script.js"></script>
 <script>
+    const openTerms = document.getElementById('openTerms');
+    const termsModal = document.getElementById('termsModal');
+    const closeTermsBtn = document.getElementById('closeTermsBtn');
+    const agreeCheckbox = document.getElementById('agreeCheckbox');
+    const okButton = document.getElementById('okButton');
+    const warningMessage = document.getElementById('warningMessage');
 
    function infoModalclose() {
       document.getElementById('infoModal').style.display = 'none';
       document.getElementById('gotoMint').style.display = 'flex';
    }
+
+   openTerms.addEventListener('click', () => {
+      termsModal.style.display = 'flex';
+      document.getElementById('infoModal').style.display = 'none';
+    });
+
+    closeTermsBtn.addEventListener('click', () => {
+      termsModal.style.display = 'none';
+      agreeCheckbox.disabled = false;
+      document.getElementById('infoModal').style.display = 'flex';
+    });
+
+    okButton.addEventListener('click', () => {
+      if (!agreeCheckbox.checked) {
+        warningMessage.style.display = 'block';
+        return; }
+      else {
+      warningMessage.style.display = 'none';
+      infoModalclose(); }
+    });
+
   const sideMenu = document.getElementById('sideMenu');
   const overlay = document.getElementById('overlay');
   const menuHandle = document.getElementById('menuHandle');
