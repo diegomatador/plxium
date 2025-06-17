@@ -141,7 +141,7 @@ async function getPlatform() {
       console.log("🌐");
     }
   } catch (error) {
-    console.error("Ошибка при определении платформы:", error);
+    console.error("Error in Getplatform:", error);
   }
 }
 
@@ -271,7 +271,7 @@ async function loadSectionWithLoader(section) {
       }
     }
   } catch (err) {
-    console.error(`Ошибка загрузки секции "${section}":`, err);
+    console.error(`Error loading Sections "${section}":`, err);
   } finally {
     loader.style.display = "none";
   }
@@ -353,6 +353,8 @@ async function checkPriorityName() {
   }
 }
 
+const withdrawBtnpr = document.getElementById("withdraw");
+
 async function profileInfo() {
   const nameProfile = document.getElementById('username');
   const Profilelogo = document.getElementById('profilelogo');
@@ -373,7 +375,20 @@ async function profileInfo() {
         console.error("Copy failed:", err);
       });
     });
-
+  try {
+    const hasUserRewards = await readContract({
+      address: contractAddress1,
+      abi: contractABI1,
+      functionName: 'hasUserRewards',
+      args: [userAccount],
+      publicClient: publicClient,
+    });
+    if (!hasUserRewards) {
+      withdrawBtnpr.disabled = true;
+    }
+  } catch (err) {
+    console.error("Error getting hasUserReward", err);
+  }
   try {
     const name = await readContract({
       address: contractAddress1,
@@ -429,6 +444,7 @@ async function profileInfo() {
   } catch (err) {
     console.error("Error getting ProfileInfo", err);
   }
+
 }
 
 async function setPriorityName(name, setActiveBtn) {
@@ -531,6 +547,7 @@ async function getPriorityName() {
 const nameInputEl = document.getElementById("nameInput");
 const statusEl = document.getElementById("mintStatus");
 const mintBtnEl = document.getElementById("mintBtn");
+mintBtnEl.disabled = false;
 
 let debounceTimeout;
 
@@ -725,6 +742,7 @@ async function upgradeLevel() {
       powerup.textContent = "Upgraded!";
       powerup.disabled = false;
       await miningfunctions();
+      loadedSections.tasks = false;
     } else {
       powerup.textContent = "Try Again";
       powerup.disabled = false;
@@ -773,12 +791,12 @@ async function dailyStrike() {
     if (receipt.status === 'success') {
       collectr.textContent = "Collected!";
       await miningfunctions();
+      loadedSections.tasks = false;
       }
       else{
         collectr.textContent = "Try Again";
         collectr.disabled = false;
       }
-
 
   } catch (err) {
     console.error("Transaction failed:", err);
@@ -1367,7 +1385,7 @@ mintBtnpr.addEventListener("click", async () => {
       return;
     }
     mintBtnpr.textContent = `Waiting for confirmation...`;
-    mintBtnpr.disabled = false;
+    mintBtnpr.disabled = true;
 
     let txHash
 
@@ -1412,6 +1430,62 @@ mintBtnpr.addEventListener("click", async () => {
     mintBtnpr.textContent = `Try again`;
     mintBtnpr.disabled = false;
   }
+});
+
+withdrawBtnpr.addEventListener("click", async () => {
+    const hasUserRewards = await readContract({
+          address: contractAddress1,
+          abi: contractABI1,
+          functionName: 'hasUserRewards',
+          args: [userAccount],
+          publicClient: publicClient,
+        });
+
+    if (hasUserRewards) {
+      withdrawBtnpr.textContent = `Waiting...`;
+      withdrawBtnpr.disabled = true;
+      try {
+        let txHash
+
+        if (isWarpcast) {
+          txHash = await walletClient.writeContract({
+            address: contractAddress1,
+            abi: contractABI1,
+            functionName: "withdrawUser"
+          });
+        } else {
+          await switchToBase();
+          const tx = await writeContract({
+              address: contractAddress1,
+              abi: contractABI1,
+              functionName: 'withdrawUser',
+            });
+          txHash = tx.hash;
+        }
+
+        const receipt = await waitForTransaction({
+          chainId: chainid,
+          hash: txHash,
+          confirmations: 1,
+          timeout: 30000,
+        });
+
+        if (receipt.status === 'success') {
+            withdrawBtnpr.textContent = `Success`;
+            await profileInfo();
+            loadedSections.invite = false;
+            }
+            else {
+            withdrawBtnpr.textContent = `Try again`;
+            withdrawBtnpr.disabled = false;
+            }
+      } catch (err) {
+        withdrawBtnpr.textContent = `Try again`;
+        withdrawBtnpr.disabled = false;
+      }
+        } else {
+          withdrawBtnpr.disabled = true;
+        }
 });
 
 function setStatuss(text, type) {
