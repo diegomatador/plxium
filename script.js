@@ -89,7 +89,7 @@ async function switchToBase() {
   }
 }
 
-let chains = [base];
+let chains = [baseSepolia];
 
 async function getPlatform() {
   try {
@@ -112,7 +112,7 @@ async function getPlatform() {
         publicClient: publicClient,
       });
 
-      ethereumClient = new EthereumClient(wagmiConfig, chains);
+      ethereumClient = new EthereumClient(wagmiConfig, [base]);
       
       console.log("Mini App");
 
