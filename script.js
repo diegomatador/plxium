@@ -17,7 +17,7 @@ const projectId = "4b8953ae3a579f498e15afac1101b481";
 
 const chainid = 84532
 
-let isWarpcast = false;
+let isFarcaster = false;
 let webSocketPublicClient;
 let publicClient;
 let ethereumClient;
@@ -93,10 +93,12 @@ let chains = [baseSepolia];
 
 async function getPlatform() {
   try {
-    await sdk.actions.ready({ disableNativeGestures: true });
-    const context = await sdk.context;
-
-    if (context && context.client) {
+    const isMiniApp = await sdk.isInMiniApp()
+    console.log(isMiniApp);
+    if (isMiniApp) {
+      await sdk.actions.ready({ disableNativeGestures: true });
+      isFarcaster = true;
+      
       const ethProvider = sdk.wallet.ethProvider;
       ethProviderr = ethProvider;
 
@@ -112,8 +114,8 @@ async function getPlatform() {
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
-      isWarpcast = true;
-      console.log(" Warpcast Mini App");
+      
+      console.log("Farcaster Mini App");
 
       walletClient = createWalletClient({
         chain: base,
@@ -165,7 +167,7 @@ async function checkWalletConnection() {
   try {
     const w3mCore = document.getElementById("w3mСore");
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       const accounts = await ethProviderr.request({ method: "eth_requestAccounts" });
       userAccount = accounts[0];
 
@@ -294,7 +296,7 @@ function shortenAddress(addr) {
 const profileImg = document.getElementById("profileImg");
 
 profileImg.addEventListener("click", () => {
-  if (isWarpcast){ return }
+  if (isFarcaster){ return }
   else { web3Modal.openModal(); }
 });
 
@@ -454,7 +456,7 @@ async function setPriorityName(name, setActiveBtn) {
 
      let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress1,
         abi: contractABI1,
@@ -651,7 +653,7 @@ mintBtnEl.addEventListener("click", async () => {
 
     let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress1,
         abi: contractABI1,
@@ -711,7 +713,7 @@ async function upgradeLevel() {
 
     let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
@@ -763,7 +765,7 @@ async function dailyStrike() {
 
     let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
@@ -915,7 +917,7 @@ async function Inviteinfo() {
     let outsideClickListenerAdded = false;
 
     shareRefBtn.onclick = () => {
-      if (isWarpcast) {
+      if (isFarcaster) {
         const isHidden = shareOptions.style.display === "none" || !shareOptions.style.display;
         shareOptions.style.display = isHidden ? "block" : "none";
 
@@ -1070,8 +1072,6 @@ async function TasksInfo() {
   }
 }
 
-
-
 async function mintReferralRewards(mintButton) {
   try {
     mintButton.disabled = true;
@@ -1079,7 +1079,7 @@ async function mintReferralRewards(mintButton) {
 
     let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
@@ -1123,7 +1123,7 @@ async function mintLevelRewards(mintButton) {
 
     let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
@@ -1167,7 +1167,7 @@ async function mintBalanceRewards(mintButton) {
 
     let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
@@ -1211,7 +1211,7 @@ async function mintStrikeRewards(mintButton) {
 
     let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
@@ -1255,7 +1255,7 @@ async function mintUpgradeRewards(mintButton) {
 
     let txHash;
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress2,
         abi: contractABI2,
@@ -1409,7 +1409,7 @@ mintBtnpr.addEventListener("click", async () => {
 
     let txHash
 
-    if (isWarpcast) {
+    if (isFarcaster) {
       txHash = await walletClient.writeContract({
         address: contractAddress1,
         abi: contractABI1,
@@ -1467,7 +1467,7 @@ withdrawBtnpr.addEventListener("click", async () => {
       try {
         let txHash
 
-        if (isWarpcast) {
+        if (isFarcaster) {
           txHash = await walletClient.writeContract({
             address: contractAddress1,
             abi: contractABI1,
