@@ -65,7 +65,7 @@
               You’ll be able to change your name later, but each name is unique.
             </p>
             <label>
-                <input type="checkbox" id="agreeCheckbox" disabled />
+                <input type="checkbox" id="agreeCheckbox"/>
                 I have read and agree to the <a id="openTerms" href="javascript:void(0)">Terms and Conditions</a>.
             </label>
             <div id="warningMessage" style="color: #f44336; font-size: 0.9em; margin-top: 10px; display: none;">
@@ -228,10 +228,11 @@
           </ul>
         </div>
     </div>
-
-    <div id="shareOptions" style="display: none; margin-top: 10px;">
-        <button id="twitterShareBtn" class="share-option-btn">Share on X(Twitter)</button>
-        <button id="warpcastShareBtn" class="share-option-btn">Share on Farcaster</button>
+    <div id="shareOptions"  style="display: none;">
+      <div class="sharess">
+        <button id="twitterShareBtn">Twitter</button>
+        <button id="warpcastShareBtn">Warpcast</button>
+      </div>
     </div>
 
     <div id="tasks" style="display: none;">
@@ -278,7 +279,6 @@
 
     closeTermsBtn.addEventListener('click', () => {
       termsModal.style.display = 'none';
-      agreeCheckbox.disabled = false;
       document.getElementById('infoModal').style.display = 'flex';
     });
 
