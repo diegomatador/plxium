@@ -94,7 +94,6 @@ let chains = [base];
 async function getPlatform() {
   try {
     const isMiniApp = await sdk.isInMiniApp()
-    console.log(isMiniApp);
     if (isMiniApp) {
       await sdk.actions.ready({ disableNativeGestures: true });
       isFarcaster = true;
@@ -115,7 +114,7 @@ async function getPlatform() {
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
       
-      console.log("Farcaster Mini App");
+      console.log("Mini App");
 
       walletClient = createWalletClient({
         chain: base,
