@@ -89,7 +89,7 @@ async function switchToBase() {
   }
 }
 
-let chains = [baseSepolia];
+let chains = [base];
 
 async function getPlatform() {
   try {
