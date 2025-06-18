@@ -910,11 +910,40 @@ async function Inviteinfo() {
       }, 1000);
     };
 
-    document.getElementById("shareRefBtn").onclick = () => {
-      if (isWarpcast) {
-        const shareOptions = document.getElementById("shareOptions");
-        shareOptions.style.display = shareOptions.style.display === "none" ? "block" : "none";
-      } else {
+    const shareRefBtn = document.getElementById("shareRefBtn");
+    const shareOptions = document.getElementById("shareOptions");
+    let outsideClickListenerAdded = false;
+
+    shareRefBtn.onclick = () => {
+      if (!isWarpcast) {
+        const isHidden = shareOptions.style.display === "none" || !shareOptions.style.display;
+        shareOptions.style.display = isHidden ? "block" : "none";
+
+        if (isHidden && !outsideClickListenerAdded) {
+          setTimeout(() => {
+            document.addEventListener("click", outsideClickListener);
+            outsideClickListenerAdded = true; }, 0);
+        }
+
+        document.getElementById("twitterShareBtn").onclick = () => {
+          const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
+          const tweetUrl = encodeURIComponent(fullRefLink);
+          const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
+          window.open(twitterShareUrl, "_blank");
+          hideShareOptions();
+        };
+
+        document.getElementById("warpcastShareBtn").onclick = async () => {
+          try {
+            await window.warpcast.share({
+              text: "Join me in PLXium and start mining 🚀",
+              url: fullRefLink,
+            });
+            hideShareOptions();
+          } catch (error) {
+            console.error("Warpcast share failed:", error);}
+        };
+        } else {
         const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
         const tweetUrl = encodeURIComponent(fullRefLink);
         const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
@@ -922,24 +951,15 @@ async function Inviteinfo() {
       }
     };
 
-    if (isWarpcast) {
-      document.getElementById("twitterShareBtn").onclick = () => {
-        const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
-        const tweetUrl = encodeURIComponent(fullRefLink);
-        const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
-        window.open(twitterShareUrl, "_blank");
-      };
+    function hideShareOptions() {
+      shareOptions.style.display = "none";
+      document.removeEventListener("click", outsideClickListener);
+      outsideClickListenerAdded = false;
+    }
 
-      document.getElementById("warpcastShareBtn").onclick = async () => {
-        try {
-          await window.warpcast.share({
-            text: "Join me in PLXium and start mining 🚀",
-            url: fullRefLink,
-          });
-        } catch (error) {
-          console.error("Warpcast share failed:", error);
-        }
-      };
+    function outsideClickListener(event) {
+      if (!shareOptions.contains(event.target) && !shareRefBtn.contains(event.target)) {
+        hideShareOptions();}
     }
 }
 
@@ -1472,8 +1492,8 @@ withdrawBtnpr.addEventListener("click", async () => {
 
         if (receipt.status === 'success') {
             withdrawBtnpr.textContent = `Success`;
-            loadedSections.invite = false;
             await profileInfo();
+            loadedSections.invite = false;
             }
             else {
             withdrawBtnpr.textContent = `Try again`;
