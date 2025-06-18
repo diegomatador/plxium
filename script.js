@@ -915,7 +915,7 @@ async function Inviteinfo() {
     let outsideClickListenerAdded = false;
 
     shareRefBtn.onclick = () => {
-      if (!isWarpcast) {
+      if (isWarpcast) {
         const isHidden = shareOptions.style.display === "none" || !shareOptions.style.display;
         shareOptions.style.display = isHidden ? "block" : "none";
 
