@@ -626,7 +626,8 @@ mintBtnEl.addEventListener("click", async () => {
         abi: contractABI1,
         functionName: "mint",
         args: [name, refcode],
-        value: priceMint,
+        value: BigInt(priceMint),
+        account: userAccount,
       });
     } else {
       await switchToBase();
