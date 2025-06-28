@@ -1,7 +1,6 @@
 import { contractAddress1, contractAddress2, contractABI1, contractABI2 } from './contracts.js';
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
-import { farcasterFrame as farcasterFrameConnector } from "https://esm.sh/@farcaster/frame-wagmi-connector@latest";
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 
 const { base } = WagmiCoreChains;
@@ -84,7 +83,7 @@ async function getPlatform() {
 
       const wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [farcasterFrameConnector()],
+        connectors: [],
         publicClient: publicClient,
       });
 
