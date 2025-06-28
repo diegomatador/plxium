@@ -16,7 +16,7 @@ const projectId = "4b8953ae3a579f498e15afac1101b481";
 
 const chainid = 8453
 const chainIdHex = "0x2105";
-let isFarcaster = false;
+let isFarcaster;
 let webSocketPublicClient;
 let publicClient;
 let ethereumClient;
@@ -83,13 +83,15 @@ async function getPlatform() {
         publicClient: publicClient,
       });
 
+      ethereumClient = new EthereumClient(wagmiConfig, chains);
+      
+
       walletClient = createWalletClient({
         chain: base,
         transport: custom(ethProviderr),
         account: userAccount,
       });
-      ethereumClient = new EthereumClient(wagmiConfig, chains);
-      console.log("Mini App (Farcaster)");
+      console.log("Mini App");
     } else {
       const { publicClient: browserPublicClient, webSocketPublicClient } = configureChains(
         chains,
