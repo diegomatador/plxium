@@ -11,6 +11,9 @@
     "homeUrl": "https://plxium.vercel.app",
     "splashImageUrl": "https://plxium.vercel.app/images/logo.png",
     "splashBackgroundColor": "#202124",
+    "requiredChains": [
+      "eip155:8453"
+    ],
     "primaryCategory": "games",
     "buttonTitle": "Let's Go",
     "ogTitle": "PLXium",
