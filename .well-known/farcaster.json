@@ -14,7 +14,7 @@
     "primaryCategory": "games",
     "buttonTitle": "Let's Go",
     "ogTitle": "PLXium",
-    "ogImageUrl": "https://plxium.vercel.app/images/oglogo.png",
+    "ogImageUrl": "https://plxium.vercel.app/images/logo.png",
     "webhookUrl": "https://plxium.vercel.app/api/webhook"
   }
 }
