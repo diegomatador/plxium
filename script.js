@@ -1,17 +1,9 @@
 import { contractAddress1, contractAddress2, contractABI1, contractABI2 } from './contracts.js';
-
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
 const { base } = WagmiCoreChains;
 const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
-
-import {
-  createWalletClient,
-  createPublicClient,
-  custom,
-  http,
-} from "https://esm.sh/viem@2.28.3";
 
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
@@ -21,7 +13,7 @@ let isFarcaster = false;
 let webSocketPublicClient;
 let publicClient;
 let ethereumClient;
-let ethProviderr;
+let ethProvider;
 let userAccount;
 let web3Modal;
 let walletClient;
@@ -65,47 +57,31 @@ let chains = [base];
 
 async function getPlatform() {
   try {
-    const isMiniApp = await sdk.isInMiniApp()
-    if (isMiniApp) {
+    const isMiniApp = await sdk.isInMiniApp();
+    isFarcaster = isMiniApp;
+    if (isFarcaster) {
       await sdk.actions.ready({ disableNativeGestures: true });
-      isFarcaster = true;
       
-      const ethProvider = sdk.wallet.ethProvider;
-      ethProviderr = ethProvider;
-
-      publicClient = createPublicClient({
-        transport: http("https://base.drpc.org"),
-        chain: base,
-      });
+      ethProvider = sdk.wallet.ethProvider;
 
       const wagmiConfig = createConfig({
         autoConnect: true,
         connectors: [],
-        publicClient: publicClient,
+        publicClient: { transport: ethProvider },,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
-      
-      console.log("Mini App");
-
-      walletClient = createWalletClient({
-        chain: base,
-        transport: custom(ethProviderr),
-        account: userAccount,
-      });
+      console.log("Mini App (Farcaster)");
     } else {
       const { publicClient: browserPublicClient, webSocketPublicClient } = configureChains(
         chains,
         [w3mProvider({ projectId })]
       );
 
-      publicClient = browserPublicClient;
-      ethProviderr = null;
-
       const wagmiConfig = createConfig({
         autoConnect: true,
         connectors: w3mConnectors({ chains, projectId }),
-        publicClient: publicClient,
+        publicClient: browserPublicClient,
         webSocketPublicClient,
       });
 
@@ -139,11 +115,14 @@ async function checkWalletConnection() {
     const w3mCore = document.getElementById("w3mСore");
 
     if (isFarcaster) {
-      const accounts = await ethProviderr.request({ method: "eth_requestAccounts" });
+      const accounts = await ethProvider.request({ method: "eth_requestAccounts" });
       userAccount = accounts[0];
+
       loader.style.display = "none";
       if (w3mCore) w3mCore.style.display = "none";
+
       checkPriorityName();
+
       const context = await sdk.context;
       if (!context.client.added){
         await sdk.actions.addFrame()
@@ -873,9 +852,9 @@ async function Inviteinfo() {
     const fullRefLink = `https://plxium.xyz/?ref=${refInfo[0]}`;
     const refLink = document.getElementById("refLink");
     refLink.textContent = `${fullRefLink}`;
-  
+
     const FarcasterRefLink = `https://farcaster.xyz/miniapps/RScuXQVeCnAe/plxium/?ref=${refInfo[0]}`
-  
+
     document.getElementById("copyRefBtn").onclick = () => {
       navigator.clipboard.writeText(fullRefLink);
       document.getElementById("copyRefBtn").innerText = "Copied!";
@@ -1362,7 +1341,6 @@ async function checkNamePr() {
 }
 
 mintBtnpr.addEventListener("click", async () => {
-
   const name = nameInputpr.value.trim();
   const refcode = "default";
 
