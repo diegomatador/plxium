@@ -15,8 +15,8 @@ import {
 
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
-const chainid = 84532
-
+const chainid = 8453
+const chainIdHex = "0x2105";
 let isFarcaster = false;
 let webSocketPublicClient;
 let publicClient;
@@ -27,41 +27,13 @@ let web3Modal;
 let walletClient;
 
 
-const baseSepolia = {
-        id: chainid,
-        name: 'Base Sepolia',
-        network: 'base-sepolia',
-        nativeCurrency: {
-          name: 'Ethereum',
-          symbol: 'ETH',
-          decimals: 18,
-        },
-        rpcUrls: {
-          default: {
-            http: ['https://sepolia.base.org'],
-          },
-          public: {
-            http: ['https://sepolia.base.org'],
-          },
-        },
-        blockExplorers: {
-          default: {
-            name: 'Basescan',
-            url: 'https://base-sepolia.blockscout.com',
-          },
-        },
-};
-
-
 async function switchToBase() {
-  const chainIdHex = "0x14A34"; // 84532 в hex
-
   try {
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }],
     });
-    console.log("✅ Сеть переключена на Base Sepolia");
+    console.log("Switch to Base");
   } catch (switchError) {
     if (switchError.code === 4902) {
       try {
@@ -69,27 +41,27 @@ async function switchToBase() {
           method: "wallet_addEthereumChain",
           params: [{
             chainId: chainIdHex,
-            chainName: "Base Sepolia",
-            rpcUrls: ["https://sepolia.base.org"],
+            chainName: "Base Mainnet",
+            rpcUrls: ["https://mainnet.base.org"],
             nativeCurrency: {
-              name: "Ethereum",
+              name: "Ether",
               symbol: "ETH",
               decimals: 18,
             },
-            blockExplorerUrls: ["https://base-sepolia.blockscout.com"],
+            blockExplorerUrls: ["https://basescan.org"],
           }],
         });
-        console.log("✅ Сеть добавлена и переключена");
+        console.log("Base added");
       } catch (addError) {
-        console.error("❌ Ошибка добавления сети:", addError);
+        console.error("Error in Base added", addError);
       }
     } else {
-      console.error("❌ Ошибка переключения сети:", switchError);
+      console.error("Error to switch Base:", switchError);
     }
   }
 }
 
-let chains = [baseSepolia];
+let chains = [base];
 
 async function getPlatform() {
   try {
@@ -112,7 +84,7 @@ async function getPlatform() {
         publicClient: publicClient,
       });
 
-      ethereumClient = new EthereumClient(wagmiConfig, [base]);
+      ethereumClient = new EthereumClient(wagmiConfig, chains);
       
       console.log("Mini App");
 
@@ -323,8 +295,8 @@ async function checkPriorityName() {
     });
 
     const checkStarted = await readContract({
-      address: contractAddress2,
-      abi: contractABI2,
+      address: contractAddress1,
+      abi: contractABI1,
       functionName: 'checkAndStart',
       args: [userAccount],
       publicClient: publicClient,
@@ -562,6 +534,8 @@ function setStatus(text, type) {
   statusEl.className = type;
 }
 
+let priceMint;
+
 async function checkName() {
   const name = nameInputEl.value.trim();
 
@@ -610,7 +584,9 @@ async function checkName() {
       args: [name],
       publicClient: publicClient,
     });
-    const priceInEth = formatUnits(price, 18);
+    priceMint = price[0];
+
+    const priceInEth = formatUnits(price[0], 18);
     mintBtnEl.textContent = `Mint for ${priceInEth} ETH`;
     mintBtnEl.disabled = false;
     setStatus("Name is available!", "success");
@@ -631,18 +607,10 @@ mintBtnEl.addEventListener("click", async () => {
   }
 
   try {
-    const price = await readContract({
-      address: contractAddress1,
-      abi: contractABI1,
-      functionName: 'getMintPrice',
-      args: [name],
-      publicClient: publicClient,
-    });
-
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
 
-    if (balance < BigInt(price)) {
+    if (balance < BigInt(priceMint)) {
       setStatus("Not enough balance for mint!");
       return;
     }
@@ -658,7 +626,7 @@ mintBtnEl.addEventListener("click", async () => {
         abi: contractABI1,
         functionName: "mint",
         args: [name, refcode],
-        value: price,
+        value: priceMint,
       });
     } else {
       await switchToBase();
@@ -667,7 +635,7 @@ mintBtnEl.addEventListener("click", async () => {
         abi: contractABI1,
         functionName: "mint",
         args: [name, refcode],
-        value: price.toString(),
+        value: priceMint.toString(),
       });
       txHash = tx.hash;
     }
@@ -714,8 +682,8 @@ async function upgradeLevel() {
 
     if (isFarcaster) {
       txHash = await walletClient.writeContract({
-        address: contractAddress2,
-        abi: contractABI2,
+        address: contractAddress1,
+        abi: contractABI1,
         functionName: "upgradeLevel",
         args: [],
         value: nextLevelCost,
@@ -723,8 +691,8 @@ async function upgradeLevel() {
     } else {
       await switchToBase();
       const tx = await writeContract({
-          address: contractAddress2,
-          abi: contractABI2,
+          address: contractAddress1,
+          abi: contractABI1,
           functionName: 'upgradeLevel',
           args: [],
           value: nextLevelCost.toString(),
@@ -766,16 +734,16 @@ async function dailyStrike() {
 
     if (isFarcaster) {
       txHash = await walletClient.writeContract({
-        address: contractAddress2,
-        abi: contractABI2,
+        address: contractAddress1,
+        abi: contractABI1,
         functionName: "dailyStrike",
         args: [],
       });
     } else {
       await switchToBase();
       const tx = await writeContract({
-          address: contractAddress2,
-          abi: contractABI2,
+          address: contractAddress1,
+          abi: contractABI1,
           functionName: 'dailyStrike',
           args: [],
         });
@@ -817,23 +785,23 @@ async function miningfunctions() {
 
   try {
     const striked = await readContract({
-      address: contractAddress2,
-      abi: contractABI2,
+      address: contractAddress1,
+      abi: contractABI1,
       functionName: 'getDailyStrikeInfo',
       args: [userAccount],
       publicClient: publicClient,
     });
     const result1 = await readContract({
-      address: contractAddress2,
-      abi: contractABI2,
+      address: contractAddress1,
+      abi: contractABI1,
       functionName: 'getNextLevelInfo',
       args: [userAccount],
       publicClient: publicClient,
     });
 
     const result = await readContract({
-      address: contractAddress2,
-      abi: contractABI2,
+      address: contractAddress1,
+      abi: contractABI1,
       functionName: 'getLevelProgress',
       args: [userAccount],
       publicClient: publicClient,
@@ -877,8 +845,8 @@ async function miningfunctions() {
 async function Inviteinfo() {
 
     const refInfo = await readContract({
-      address: contractAddress2,
-      abi: contractABI2,
+      address: contractAddress1,
+      abi: contractABI1,
       functionName: 'getReferralsInfo',
       args: [userAccount],
       publicClient: publicClient,
@@ -973,8 +941,8 @@ function formatNumberShort(n) {
 async function TasksInfo() {
 
   const RewardsInfo = await readContract({
-    address: contractAddress2,
-    abi: contractABI2,
+    address: contractAddress1,
+    abi: contractABI1,
     functionName: 'getRewardsInfo',
     args: [userAccount],
     publicClient: publicClient,
@@ -991,7 +959,7 @@ async function TasksInfo() {
   const rewardMilestones = {
     referral: [3, 5, 10],
     level: [3, 5, 10, 20, 30],
-    balance: [1000, 5000, 10000, 20000, 30000],
+    balance: [3000, 7000, 10000, 20000, 30000],
     strike: [3, 10, 30, 50],
     upgrade: [1, 3, 5, 10],
   };
@@ -1317,6 +1285,8 @@ function formatUnits(value, decimals = 18) {
   return fracPart ? `${intPart}.${fracPart}` : intPart;
 }
 
+let priceProfile;
+
 async function checkNamePr() {
   const name = nameInputpr.value.trim();
 
@@ -1366,10 +1336,14 @@ async function checkNamePr() {
       args: [name],
       publicClient: publicClient,
     });
-    const priceInEth = formatUnits(price, 18);
+
+    const priceInEth = formatUnits(price[0], 18);
+    const power = price[1];
+    priceProfile = price[0];
+
     mintBtnpr.textContent = `Mint for ${priceInEth} ETH`;
     mintBtnpr.disabled = false;
-    setStatuss("Name is available!", "success");
+    setStatuss(`Name is available! +${power} Power`, "success");
 
   } catch (err) {
     console.error("Error during name check:", err);
@@ -1388,18 +1362,10 @@ mintBtnpr.addEventListener("click", async () => {
   }
 
   try {
-    const price = await readContract({
-      address: contractAddress1,
-      abi: contractABI1,
-      functionName: 'getMintPrice',
-      args: [name],
-      publicClient: publicClient,
-    });
-
     const balanceData = await fetchBalance({ address: userAccount });
     const balance = BigInt(balanceData.value);
 
-    if (balance < BigInt(price)) {
+    if (balance < BigInt(priceProfile)) {
       mintBtnpr.textContent = `Not enough balance for mint.`;
       return;
     }
@@ -1414,7 +1380,7 @@ mintBtnpr.addEventListener("click", async () => {
         abi: contractABI1,
         functionName: "mint",
         args: [name, refcode],
-        value: price,
+        value: priceProfile,
       });
     } else {
       await switchToBase();
@@ -1423,7 +1389,7 @@ mintBtnpr.addEventListener("click", async () => {
           abi: contractABI1,
           functionName: 'mint',
           args: [name, refcode],
-          value: price.toString(),
+          value: priceProfile.toString(),
         });
       txHash = tx.hash;
     }
