@@ -1,9 +1,12 @@
 import { contractAddress1, contractAddress2, contractABI1, contractABI2 } from './contracts.js';
 import { EthereumClient, w3mConnectors, w3mProvider, WagmiCore, WagmiCoreChains } from "https://unpkg.com/@web3modal/ethereum@2.7.1";
 import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.2";
+import { farcasterFrame as farcasterFrameConnector } from "https://esm.sh/@farcaster/frame-wagmi-connector@latest";
+import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
+
 const { base } = WagmiCoreChains;
 const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
-import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
+
 
 import {
   createWalletClient,
@@ -14,9 +17,9 @@ import {
 
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
-const chainid = 8453
+const chainid = 8453;
 const chainIdHex = "0x2105";
-let isFarcaster;
+let isFarcaster = false;
 let webSocketPublicClient;
 let publicClient;
 let ethereumClient;
@@ -68,7 +71,7 @@ async function getPlatform() {
     isFarcaster = isMiniApp;
     if (isFarcaster) {
       await sdk.actions.ready({ disableNativeGestures: true });
-      
+
       const ethProvider = sdk.wallet.ethProvider;
       ethProviderr = ethProvider;
 
@@ -79,19 +82,18 @@ async function getPlatform() {
 
       const wagmiConfig = createConfig({
         autoConnect: true,
-        connectors: [],
+        connectors: [farcasterFrameConnector()],
         publicClient: publicClient,
       });
 
       ethereumClient = new EthereumClient(wagmiConfig, chains);
-      
+      console.log("Mini App");
 
       walletClient = createWalletClient({
         chain: base,
         transport: custom(ethProviderr),
         account: userAccount,
       });
-      console.log("Mini App");
     } else {
       const { publicClient: browserPublicClient, webSocketPublicClient } = configureChains(
         chains,
@@ -144,16 +146,16 @@ async function checkWalletConnection() {
       if (!context.client.added){
         await sdk.actions.addFrame()
       }
+      const chainId = await ethProvider.request({ method: "eth_chainId" });
+        console.log("Current Farcaster chainId:", chainId);
     } else {
-
       const account = getAccount();
-
       if (account.isConnected) {
         loader.style.display = "none";
         if (w3mCore) w3mCore.style.display = "none";
         userAccount = account.address;
-        checkPriorityName();
         switchToBase();
+        checkPriorityName();
       } else {
         const unwatch = watchAccount((updatedAccount) => {
           if (updatedAccount.isConnected) {
@@ -188,7 +190,6 @@ const sections = {
   invite: document.getElementById("invite"),
   about: document.getElementById("about"),
 };
-
 const buttonsm = {
   miningbtn: "mining",
   profilebtn: "profile",
@@ -258,7 +259,6 @@ function shortenAddress(addr) {
   return addr.slice(0, 6) + "..." + addr.slice(-4);
 }
 
-
 const profileImg = document.getElementById("profileImg");
 
 profileImg.addEventListener("click", () => {
@@ -280,7 +280,6 @@ document.getElementById("mintMoreToggle").addEventListener("click", () => {
 
 async function checkPriorityName() {
   try {
-
     const hasNFT = await readContract({
       address: contractAddress1,
       abi: contractABI1,
