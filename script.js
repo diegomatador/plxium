@@ -141,7 +141,6 @@ async function checkWalletConnection() {
     if (isFarcaster) {
       const accounts = await ethProviderr.request({ method: "eth_requestAccounts" });
       userAccount = accounts[0];
-      console.log(userAccount);
       loader.style.display = "none";
       if (w3mCore) w3mCore.style.display = "none";
       checkPriorityName();
