@@ -1376,7 +1376,7 @@ mintBtnpr.addEventListener("click", async () => {
     const balance = BigInt(balanceData.value);
 
     if (balance < BigInt(priceProfile)) {
-      mintBtnpr.textContent = `Not enough balance for mint.`;
+      setStatuss("Not enough balance for mint.", "error");
       return;
     }
     mintBtnpr.textContent = `Waiting for confirmation...`;
