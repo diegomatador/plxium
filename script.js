@@ -908,6 +908,7 @@ async function Inviteinfo() {
 
         document.getElementById("warpcastShareBtn").onclick = async () => {
           try {
+            console.log(window.warpcast);
             await window.warpcast.share({
               text: "Join me in PLXium and receiving rewards",
               url: FarcasterRefLink,
