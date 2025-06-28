@@ -19,7 +19,7 @@ const projectId = "4b8953ae3a579f498e15afac1101b481";
 
 const chainid = 8453;
 const chainIdHex = "0x2105";
-let isFarcaster = false;
+let isFarcaster;
 let webSocketPublicClient;
 let publicClient;
 let ethereumClient;
@@ -68,8 +68,10 @@ let chains = [base];
 async function getPlatform() {
   try {
     const isMiniApp = await sdk.isInMiniApp();
-    isFarcaster = isMiniApp;
-    if (isFarcaster) {
+    const context = await sdk.context;
+
+    if (isMiniApp || (context && context.client)) {
+      isFarcaster = true;
       await sdk.actions.ready({ disableNativeGestures: true });
 
       const ethProvider = sdk.wallet.ethProvider;
@@ -95,6 +97,7 @@ async function getPlatform() {
         account: userAccount,
       });
     } else {
+        isFarcaster = false;
       const { publicClient: browserPublicClient, webSocketPublicClient } = configureChains(
         chains,
         [w3mProvider({ projectId })]
