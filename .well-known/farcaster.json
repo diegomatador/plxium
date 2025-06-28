@@ -1,8 +1,10 @@
-{"accountAssociation": {
-    "header": "eyJmaWQiOjM5MDI2OSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDJFNDQzRThDODZEMTRlYjVlOTMxMzYwODczQ2FhOTY3QTNjQjVmNkUifQ",
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjExMTExOTQsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg1ZjRlNDczMUFmNjlkNDc2YTVGNzg0MjI4MGJFZTJENTMyRGU2MENjIn0",
     "payload": "eyJkb21haW4iOiJwbHhpdW0udmVyY2VsLmFwcCJ9",
-    "signature": "MHg3NDFmNTIwMzkxNjBiZDE2ZTlhZGY5ZTBjMTkzZTc4NmI5ZWIwMDg4OWY2ODkyZDRhZmUwNmM5NWRjNDZiZjhjNmYyNjQwNzE5NDBjMmVhMTY2MDM5YTJlMWMzNWFmZjhmMzhhN2U3YjdhYWM0MDk1ZDQ0OGM1ZjU2NjhkNGRlOTFi"
+    "signature": "MHg5ZjQyYTM3Y2EzYjBjZDVmZDgyZDk5MGM3ZTBlNjdlMzczYTg2MzdkZDI3OTliNzVmYmE1MGMwZGNkYWM0ZGY1NDVkZmEzMWQ3MWM3Njk2ZjdiNTZiNGI2ZjY4NDAwZTk5Mjk0NGI2YTc3OTg4M2I2MDVhMDFjYWQxMGM4YjI5OTFi"
   },
+}
   "frame": {
     "version": "1",
     "name": "PLXium",
@@ -13,6 +15,7 @@
     "primaryCategory": "games",
     "buttonTitle": "Let's Go",
     "ogTitle": "PLXium",
-    "ogImageUrl": "https://plxium.vercel.app/images/oglogo.png"
+    "ogImageUrl": "https://plxium.vercel.app/images/oglogo.png",
+    "webhookUrl": "https://plxium.vercel.app/api/webhook"
   }
 }
