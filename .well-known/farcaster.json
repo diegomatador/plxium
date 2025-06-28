@@ -9,7 +9,7 @@
     "name": "PLXium",
     "iconUrl": "https://plxium.vercel.app/images/logo1024.png",
     "homeUrl": "https://plxium.vercel.app",
-    "splashImageUrl": "https://plxium.vercel.app/images/logo.png",
+    "splashImageUrl": "https://plxium.vercel.app/images/logo1024.png",
     "splashBackgroundColor": "#202124",
     "requiredChains": [
       "eip155:8453"
