@@ -909,9 +909,9 @@ async function Inviteinfo() {
         document.getElementById("warpcastShareBtn").onclick = async () => {
           console.log(window.warpcast);
           try {
-            await window.warpcast.share({
+            await sdk.actions.composeCast({
               text: "Join me in PLXium and receiving rewards",
-              url: FarcasterRefLink,
+              embeds: [fullRefLink],
             });
             hideShareOptions();
           } catch (error) {
