@@ -874,7 +874,9 @@ async function Inviteinfo() {
     const fullRefLink = `https://plxium.xyz/?ref=${refInfo[0]}`;
     const refLink = document.getElementById("refLink");
     refLink.textContent = `${fullRefLink}`;
+  
     const FarcasterRefLink = `https://farcaster.xyz/miniapps/RScuXQVeCnAe/plxium/?ref=${refInfo[0]}`
+  
     document.getElementById("copyRefBtn").onclick = () => {
       navigator.clipboard.writeText(fullRefLink);
       document.getElementById("copyRefBtn").innerText = "Copied!";
@@ -907,11 +909,10 @@ async function Inviteinfo() {
         };
 
         document.getElementById("warpcastShareBtn").onclick = async () => {
-          console.log(window.warpcast);
           try {
             await sdk.actions.composeCast({
               text: "Join me in PLXium and receiving rewards",
-              embeds: [fullRefLink],
+              embeds: [FarcasterRefLink],
             });
             hideShareOptions();
           } catch (error) {
