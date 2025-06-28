@@ -11,7 +11,6 @@ const chainid = 8453
 const chainIdHex = "0x2105";
 let isFarcaster = false;
 let webSocketPublicClient;
-let publicClient;
 let ethereumClient;
 let ethProvider;
 let userAccount;
@@ -269,7 +268,6 @@ async function checkPriorityName() {
       abi: contractABI1,
       functionName: 'hasAnyNFT',
       args: [userAccount],
-      publicClient: publicClient,
     });
 
     const checkStarted = await readContract({
@@ -277,7 +275,6 @@ async function checkPriorityName() {
       abi: contractABI1,
       functionName: 'checkAndStart',
       args: [userAccount],
-      publicClient: publicClient,
     });
 
     const refInput = document.getElementById("refcodeInput");
@@ -332,7 +329,6 @@ async function profileInfo() {
       abi: contractABI1,
       functionName: 'hasUserRewards',
       args: [userAccount],
-      publicClient: publicClient,
     });
     if (!hasUserRewards) {
       withdrawBtnpr.disabled = true;
@@ -346,7 +342,6 @@ async function profileInfo() {
       abi: contractABI1,
       functionName: 'getPriorityName',
       args: [userAccount],
-      publicClient: publicClient,
     });
 
     const names = await readContract({
@@ -354,7 +349,6 @@ async function profileInfo() {
       abi: contractABI1,
       functionName: 'getAllNames',
       args: [userAccount],
-      publicClient: publicClient,
     });
 
     nameProfile.textContent = name;
@@ -467,7 +461,6 @@ async function getPriorityName() {
       abi: contractABI1,
       functionName: 'getPriorityName',
       args: [userAccount],
-      publicClient: publicClient,
     });
     if (name && nameProfile) {
       nameProfile.textContent = name;
