@@ -1463,8 +1463,10 @@ withdrawBtnpr.addEventListener("click", async () => {
 
         if (receipt.status === 'success') {
             withdrawBtnpr.textContent = `Success`;
-            await profileInfo();
+            withdrawBtnpr.disabled = false;
             loadedSections.invite = false;
+            loadedSections.profle = false;
+            await profileInfo();
             }
             else {
             withdrawBtnpr.textContent = `Try again`;
