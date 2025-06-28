@@ -5,14 +5,22 @@ const { base } = WagmiCoreChains;
 const { watchAccount, waitForTransaction, writeContract, configureChains, createConfig, getAccount, readContract, fetchBalance }  = WagmiCore;
 import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
 
+import {
+  createWalletClient,
+  createPublicClient,
+  custom,
+  http,
+} from "https://esm.sh/viem@2.28.3";
+
 const projectId = "4b8953ae3a579f498e15afac1101b481";
 
 const chainid = 8453
 const chainIdHex = "0x2105";
 let isFarcaster = false;
 let webSocketPublicClient;
+let publicClient;
 let ethereumClient;
-let ethProvider;
+let ethProviderr;
 let userAccount;
 let web3Modal;
 let walletClient;
@@ -61,14 +69,25 @@ async function getPlatform() {
     if (isFarcaster) {
       await sdk.actions.ready({ disableNativeGestures: true });
       
-      ethProvider = sdk.wallet.ethProvider;
+      const ethProvider = sdk.wallet.ethProvider;
+      ethProviderr = ethProvider;
+
+      publicClient = createPublicClient({
+        transport: http("https://base.drpc.org"),
+        chain: base,
+      });
 
       const wagmiConfig = createConfig({
         autoConnect: true,
         connectors: [],
-        publicClient: { transport: ethProvider },
+        publicClient: publicClient,
       });
 
+      walletClient = createWalletClient({
+        chain: base,
+        transport: custom(ethProviderr),
+        account: userAccount,
+      });
       ethereumClient = new EthereumClient(wagmiConfig, chains);
       console.log("Mini App (Farcaster)");
     } else {
@@ -114,14 +133,11 @@ async function checkWalletConnection() {
     const w3mCore = document.getElementById("w3mСore");
 
     if (isFarcaster) {
-      const accounts = await ethProvider.request({ method: "eth_requestAccounts" });
+      const accounts = await ethProviderr.request({ method: "eth_requestAccounts" });
       userAccount = accounts[0];
-
       loader.style.display = "none";
       if (w3mCore) w3mCore.style.display = "none";
-
       checkPriorityName();
-
       const context = await sdk.context;
       if (!context.client.added){
         await sdk.actions.addFrame()
@@ -268,6 +284,7 @@ async function checkPriorityName() {
       abi: contractABI1,
       functionName: 'hasAnyNFT',
       args: [userAccount],
+      publicClient: publicClient,
     });
 
     const checkStarted = await readContract({
@@ -275,6 +292,7 @@ async function checkPriorityName() {
       abi: contractABI1,
       functionName: 'checkAndStart',
       args: [userAccount],
+      publicClient: publicClient,
     });
 
     const refInput = document.getElementById("refcodeInput");
@@ -329,6 +347,7 @@ async function profileInfo() {
       abi: contractABI1,
       functionName: 'hasUserRewards',
       args: [userAccount],
+      publicClient: publicClient,
     });
     if (!hasUserRewards) {
       withdrawBtnpr.disabled = true;
@@ -342,6 +361,7 @@ async function profileInfo() {
       abi: contractABI1,
       functionName: 'getPriorityName',
       args: [userAccount],
+      publicClient: publicClient,
     });
 
     const names = await readContract({
@@ -349,6 +369,7 @@ async function profileInfo() {
       abi: contractABI1,
       functionName: 'getAllNames',
       args: [userAccount],
+      publicClient: publicClient,
     });
 
     nameProfile.textContent = name;
@@ -405,6 +426,7 @@ async function setPriorityName(name, setActiveBtn) {
         abi: contractABI1,
         functionName: "setPriorityName",
         args: [name],
+        account: userAccount,
       });
     } else {
       await switchToBase();
@@ -461,6 +483,7 @@ async function getPriorityName() {
       abi: contractABI1,
       functionName: 'getPriorityName',
       args: [userAccount],
+      publicClient: publicClient,
     });
     if (name && nameProfile) {
       nameProfile.textContent = name;
@@ -1420,7 +1443,6 @@ withdrawBtnpr.addEventListener("click", async () => {
             abi: contractABI1,
             functionName: "withdrawUser",
             account: userAccount,
-
           });
         } else {
           await switchToBase();
