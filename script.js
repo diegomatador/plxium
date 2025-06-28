@@ -687,7 +687,8 @@ async function upgradeLevel() {
         abi: contractABI1,
         functionName: "upgradeLevel",
         args: [],
-        value: nextLevelCost,
+        value: BigInt(nextLevelCost),
+        account: userAccount,
       });
     } else {
       await switchToBase();
@@ -739,6 +740,8 @@ async function dailyStrike() {
         abi: contractABI1,
         functionName: "dailyStrike",
         args: [],
+        account: userAccount,
+
       });
     } else {
       await switchToBase();
@@ -1052,6 +1055,7 @@ async function mintReferralRewards(mintButton) {
         address: contractAddress2,
         abi: contractABI2,
         functionName: "mintReferralRewards",
+        account: userAccount,
       });
     } else {
         await switchToBase();
@@ -1096,6 +1100,7 @@ async function mintLevelRewards(mintButton) {
         address: contractAddress2,
         abi: contractABI2,
         functionName: "mintLevelRewards",
+        account: userAccount,
       });
     } else {
         await switchToBase();
@@ -1140,6 +1145,7 @@ async function mintBalanceRewards(mintButton) {
         address: contractAddress2,
         abi: contractABI2,
         functionName: "mintBalanceRewards",
+        account: userAccount,
       });
     } else {
       await switchToBase();
@@ -1184,6 +1190,7 @@ async function mintStrikeRewards(mintButton) {
         address: contractAddress2,
         abi: contractABI2,
         functionName: "mintStrikeRewards",
+        account: userAccount,
       });
     } else {
       await switchToBase();
@@ -1228,6 +1235,7 @@ async function mintUpgradeRewards(mintButton) {
         address: contractAddress2,
         abi: contractABI2,
         functionName: "mintUpgradeRewards",
+        account: userAccount,
       });
     } else {
       await switchToBase();
@@ -1381,7 +1389,8 @@ mintBtnpr.addEventListener("click", async () => {
         abi: contractABI1,
         functionName: "mint",
         args: [name, refcode],
-        value: priceProfile,
+        value: BigInt(priceProfile),
+        account: userAccount,
       });
     } else {
       await switchToBase();
@@ -1437,7 +1446,9 @@ withdrawBtnpr.addEventListener("click", async () => {
           txHash = await walletClient.writeContract({
             address: contractAddress1,
             abi: contractABI1,
-            functionName: "withdrawUser"
+            functionName: "withdrawUser",
+            account: userAccount,
+
           });
         } else {
           await switchToBase();
