@@ -874,7 +874,7 @@ async function Inviteinfo() {
     const fullRefLink = `https://plxium.xyz/?ref=${refInfo[0]}`;
     const refLink = document.getElementById("refLink");
     refLink.textContent = `${fullRefLink}`;
-
+    const FarcasterRefLink = `https://farcaster.xyz/miniapps/RScuXQVeCnAe/plxium/?ref=${refInfo[0]}`
     document.getElementById("copyRefBtn").onclick = () => {
       navigator.clipboard.writeText(fullRefLink);
       document.getElementById("copyRefBtn").innerText = "Copied!";
@@ -899,8 +899,8 @@ async function Inviteinfo() {
         }
 
         document.getElementById("twitterShareBtn").onclick = () => {
-          const tweetText = encodeURIComponent("Join me in PLXium and start mining 🚀");
-          const tweetUrl = encodeURIComponent(fullRefLink);
+          const tweetText = encodeURIComponent("Join me in PLXium and receiving rewards");
+          const tweetUrl = encodeURIComponent(FarcasterRefLink);
           const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
           window.open(twitterShareUrl, "_blank");
           hideShareOptions();
@@ -909,8 +909,8 @@ async function Inviteinfo() {
         document.getElementById("warpcastShareBtn").onclick = async () => {
           try {
             await window.warpcast.share({
-              text: "Join me in PLXium and start mining 🚀",
-              url: fullRefLink,
+              text: "Join me in PLXium and receiving rewards",
+              url: FarcasterRefLink,
             });
             hideShareOptions();
           } catch (error) {
