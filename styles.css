@@ -123,7 +123,7 @@
 
 .progress-fill { height: 100%; background: linear-gradient(to right, #0e6073, #08573f); transition: width 0.3s ease; }
 
-.powerup { background: linear-gradient(to right, #0e6073, #08573f); color: white; padding: 10px 30px; border: none; border-radius: 999px; font-weight: bold; font-size: 16px; width: 80%; text-transform: uppercase; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.powerup { z-index: 999; background: linear-gradient(to right, #0e6073, #08573f); color: white; padding: 10px 30px; border: none; border-radius: 999px; font-weight: bold; font-size: 16px; width: 80%; text-transform: uppercase; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 
 .powerup:hover { transform: scale(1.05); }
 
@@ -144,7 +144,9 @@
 
   .level-progress-container { width: 70%; margin: 0 auto; }
   }
-
+@media (max-width: 375px) {
+  .mining { margin-top: 10vh; height: 90vh; margin-left: 0; width: 100vw; padding: 10px 10px; gap: 10px; box-sizing: border-box;}
+  }
 
 /* mining center*/
 .mining-center { box-sizing: border-box; display: flex; flex-direction: column; align-items: center; position: relative; }
